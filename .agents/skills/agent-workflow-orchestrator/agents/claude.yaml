@@ -1,0 +1,25 @@
+interface:
+  display_name: 'Agent Workflow Orchestrator'
+  short_description: 'Coordinate project skills and hot cache'
+  default_prompt: 'Use $agent-workflow-orchestrator to choose the right skills, update project memory, and execute this task.'
+
+provider:
+  name: claude
+  family: anthropic
+  portal_ready: true
+  status: template
+
+workflow_support:
+  reads_hot_cache_first: true
+  reads_prompt_activity_log: true
+  supports_skill_chaining: true
+  supports_website_exploration: true
+  supports_flow_and_state_diagrams: true
+  supports_test_design: true
+  supports_playwright_implementation: true
+  updates_project_memory: true
+
+setup_notes:
+  - Add provider-specific credentials outside the repository.
+  - Keep the same orchestration workflow defined in `../SKILL.md`.
+  - Do not store secrets in `.agents/` files.

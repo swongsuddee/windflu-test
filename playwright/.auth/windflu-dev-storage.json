@@ -1,0 +1,14 @@
+{
+  "cookies": [],
+  "origins": [
+    {
+      "origin": "https://www.windflu.com",
+      "localStorage": [
+        {
+          "name": "isDev",
+          "value": "true"
+        }
+      ]
+    }
+  ]
+}
