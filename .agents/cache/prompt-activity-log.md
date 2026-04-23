@@ -77,13 +77,15 @@ Actions:
 
 Result:
 
-- The project now has an internal commit/push policy and a bootstrapped local
-  Git repository ready for the first commit and push.
+- The project now has an internal commit/push policy, a bootstrapped Git
+  repository, initial commit `beea295`, and `origin/main` tracking the GitHub
+  remote.
 
 Validation:
 
 - `npm run format:check` passed.
 - `npm run lint` passed.
+- `git push -u origin main` passed.
 
 Token usage:
 
