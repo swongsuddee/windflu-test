@@ -2479,3 +2479,298 @@ Reasoning summary:
 - The old blocker was about implementation readiness, so the right retest was
   to verify content quality and stability directly on both policy tabs before
   changing the incident status.
+
+## 2026-04-26 00:39:58 +0700
+
+Prompt summary:
+
+- Fix the TypeScript editor error in `playwright.config.ts` for missing
+  `process` typing.
+
+Skills/tools used:
+
+- `agent-workflow-orchestrator`
+- Local repository inspection with `sed` and `rg`
+- Local file editing with `apply_patch`
+
+Actions:
+
+- Checked the repository for `tsconfig.json` / `jsconfig.json` and confirmed
+  there is no project TypeScript config file.
+- Confirmed `@types/node` is already present in `package.json`.
+- Added `/// <reference types="node" />` to the top of
+  `playwright.config.ts` so the file explicitly opts into Node globals such as
+  `process`.
+
+Result:
+
+- The `process` name resolution error in `playwright.config.ts` is addressed
+  without introducing a broader TypeScript config change.
+
+Validation:
+
+- `npx prettier --check playwright.config.ts` passed.
+
+Token usage:
+
+- Total: Not available in this interface
+- Input: Not available in this interface
+- Output: Not available in this interface
+
+Reasoning summary:
+
+- Because the repo has no `tsconfig.json`, the smallest reliable fix was to
+  make the Playwright config file opt into Node types directly rather than
+  adding broader TypeScript project configuration.
+
+## 2026-04-26 00:42:27 +0700
+
+Prompt summary:
+
+- Do test design for brand registration.
+
+Skills/tools used:
+
+- `agent-workflow-orchestrator`
+- `test-design-zephyr`
+- Local repository inspection with `sed`
+- Local file editing with `apply_patch`
+
+Actions:
+
+- Reviewed the current high-confidence brand registration exploration and the
+  stale brand success test-design file.
+- Replaced the old 90% confidence brand success draft, which still referenced
+  the removed modal flow and closed `INC-002` blocker, with a current design
+  aligned to the 2026-04-26 live exploration.
+- Updated the design to target
+  `src/test/web-ui/brand-register/register-success.spec.ts`
+  and to cover the current inline policy-card success path on
+  `/brand/register`.
+
+Result:
+
+- The brand registration success test design now matches the current live flow
+  and is ready for implementation.
+
+Validation:
+
+- `npx prettier --write src/test/web-ui/brand-register/register-success-test-design.md` passed.
+
+Token usage:
+
+- Total: Not available in this interface
+- Input: Not available in this interface
+- Output: Not available in this interface
+
+Reasoning summary:
+
+- The stale design no longer matched the explored product behavior, so the
+  correct move was to replace it with a current success-path design based on
+  the refreshed brand exploration instead of preserving the obsolete blocker
+  assumptions.
+
+## 2026-04-26 00:46:44 +0700
+
+Prompt summary:
+
+- Start implementing the test for brand register success.
+
+Skills/tools used:
+
+- `agent-workflow-orchestrator`
+- `playwright-skill`
+- Local repository inspection with `sed`, `rg`, and `find`
+- Live Playwright probing with local `node` scripts
+- Local file editing with `apply_patch`
+- Targeted Playwright execution with `npx playwright test`
+
+Actions:
+
+- Reused the refreshed brand success-flow design and exploration as the
+  implementation source of truth.
+- Updated `src/page/brand-register-page.ts` from the old modal-based step-2
+  assumptions to the current inline policy-card flow and added success-state
+  assertions.
+- Added `src/test/web-ui/brand-register/register-success.spec.ts` to implement
+  `REG-VAL-001` for the live brand success path, including the post-success
+  login CTA assertion and success-account logging.
+- Investigated the initial failing login-page assertion using the Playwright
+  error context and a quick live probe, then corrected the assertion to the
+  actual brand login markers (`ยินดีต้อนรับ` heading and `อีเมลบริษัท` input).
+
+Result:
+
+- Brand success-path implementation now exists and passes against the live site.
+
+Validation:
+
+- `npm run lint -- src/test/web-ui/brand-register/register-success.spec.ts src/page/brand-register-page.ts` passed.
+- `npx playwright test --project=web-ui-unauthenticated src/test/web-ui/brand-register/register-success.spec.ts` passed with `1 passed`.
+- `npx prettier --check src/test/web-ui/brand-register/register-success.spec.ts src/page/brand-register-page.ts src/test/web-ui/creator-register-flow/register-success-accounts.md` passed after formatting.
+
+Token usage:
+
+- Total: Not available in this interface
+- Input: Not available in this interface
+- Output: Not available in this interface
+
+Reasoning summary:
+
+- The old brand page object still modeled a removed modal flow, so the right
+  implementation path was to bring the page object forward to the current
+  inline policy-card UI and then build the success spec on that updated
+  abstraction.
+
+## 2026-04-26 00:50:58 +07
+
+Prompt summary:
+
+- Move the shared `register-success-accounts.md` file out of the creator
+  feature folder because both creator and brand success flows update it.
+
+Skills/tools used:
+
+- `agent-workflow-orchestrator`
+- `functions.exec_command`
+- `functions.apply_patch`
+- `multi_tool_use.parallel`
+
+Actions taken:
+
+- Moved `src/test/web-ui/creator-register-flow/register-success-accounts.md`
+  to `src/test-data/register-success-accounts.md`.
+- Updated `src/util-services/register-success-account-log.service.ts` to write
+  to the new shared test-data path.
+- Updated
+  `src/test/web-ui/brand-register/register-success-test-design.md` to point at
+  the new shared registry.
+- Revised the registry file header text so it describes a shared test-data
+  record instead of a creator-local artifact.
+- Updated `.agents/cache/hot-cache.md` with the new location and validation.
+
+Result:
+
+- The success-account registry now lives in a neutral shared location under
+  `src/test-data`, and the active service/design references match that move.
+
+Validation:
+
+- `rg -n "src/test/web-ui/creator-register-flow/register-success-accounts\\.md|register-success-accounts\\.md" src .agents/cache/hot-cache.md -g '!node_modules'` confirmed only the historical hot-cache note still mentions the old path.
+- `npx prettier --check src/util-services/register-success-account-log.service.ts src/test/web-ui/brand-register/register-success-test-design.md src/test-data/register-success-accounts.md` passed.
+
+Token usage:
+
+- Total: Not available in this interface
+- Input: Not available in this interface
+- Output: Not available in this interface
+
+Reasoning summary:
+
+- Since both creator and brand success specs append to the same registry, the
+  file needed to move from a feature folder into `src/test-data` to reflect
+  its actual shared ownership and avoid misleading future updates.
+
+## 2026-04-26 00:55:40 +07
+
+Prompt summary:
+
+- Update the shared registration success registry to store actual passwords,
+  make generated passwords random per run, and ignore the registry file from
+  Git.
+
+Skills/tools used:
+
+- `agent-workflow-orchestrator`
+- `functions.exec_command`
+- `functions.apply_patch`
+- `multi_tool_use.parallel`
+
+Actions taken:
+
+- Updated `src/test-data/register-test-data.ts` so valid creator and brand
+  account builders generate unique passwords per run instead of reusing the
+  old static password.
+- Updated `src/util-services/register-success-account-log.service.ts` to store
+  the actual generated password, auto-create
+  `src/test-data/register-success-accounts.md` when missing, and continue
+  inserting new rows at the top.
+- Updated creator and brand success specs to log `accountData.password`
+  directly.
+- Revised `src/test-data/register-success-accounts.md` to reflect the new
+  password column and marked older rows as not recorded because those
+  passwords were never captured.
+- Added `src/test-data/register-success-accounts.md` to `.gitignore`.
+- Updated the brand success design note to reflect the gitignored local
+  password registry.
+- Updated `.agents/cache/hot-cache.md`.
+
+Result:
+
+- Future successful creator and brand registration runs now record their
+  actual generated password in a local gitignored registry, and the logging
+  service no longer depends on a committed copy of that file.
+
+Validation:
+
+- `npm run lint -- src/test-data/register-test-data.ts src/util-services/register-success-account-log.service.ts src/test/web-ui/creator-register-flow/register-success.spec.ts src/test/web-ui/brand-register/register-success.spec.ts` passed.
+- `npx prettier --write src/test-data/register-test-data.ts src/util-services/register-success-account-log.service.ts src/test/web-ui/creator-register-flow/register-success.spec.ts src/test/web-ui/brand-register/register-success.spec.ts src/test-data/register-success-accounts.md src/test/web-ui/brand-register/register-success-test-design.md .agents/cache/hot-cache.md .agents/cache/prompt-activity-log.md` completed.
+- `npx prettier --check src/test-data/register-test-data.ts src/util-services/register-success-account-log.service.ts src/test/web-ui/creator-register-flow/register-success.spec.ts src/test/web-ui/brand-register/register-success.spec.ts src/test-data/register-success-accounts.md src/test/web-ui/brand-register/register-success-test-design.md` passed.
+
+Token usage:
+
+- Total: Not available in this interface
+- Input: Not available in this interface
+- Output: Not available in this interface
+
+Reasoning summary:
+
+- To satisfy the request safely, the registry needed to become a local-only
+  artifact while the test-data builders needed unique passwords so each logged
+  row reflects a real reusable credential rather than a shared static one.
+
+## 2026-04-26 00:59:18 +07
+
+Prompt summary:
+
+- Create a commit and push the current registration-related changes.
+
+Skills/tools used:
+
+- `agent-workflow-orchestrator`
+- `functions.exec_command`
+- `functions.apply_patch`
+- `multi_tool_use.parallel`
+
+Actions taken:
+
+- Read the project commit policy and inspected the current worktree.
+- Revalidated the affected registration success surface with lint, Prettier,
+  and targeted Playwright runs for creator and brand success specs.
+- Updated `.agents/cache/hot-cache.md` with the fresh validation status and
+  latest registration logging changes.
+- Prepared the worktree for staging and commit.
+
+Result:
+
+- The registration-related changes are validated and ready to be committed and
+  pushed.
+
+Validation:
+
+- `npm run lint -- src/test-data/register-test-data.ts src/util-services/register-success-account-log.service.ts src/test/web-ui/creator-register-flow/register-success.spec.ts src/test/web-ui/brand-register/register-success.spec.ts src/page/brand-register-page.ts` passed.
+- `npx prettier --check .agents/cache/hot-cache.md .agents/cache/prompt-activity-log.md src/test-data/register-test-data.ts src/util-services/register-success-account-log.service.ts src/test/web-ui/creator-register-flow/register-success.spec.ts src/test/web-ui/brand-register/register-success.spec.ts src/page/brand-register-page.ts src/test/web-ui/brand-register/register-success-test-design.md` passed.
+- `npx playwright test --project=web-ui-unauthenticated src/test/web-ui/creator-register-flow/register-success.spec.ts` passed with `1 passed`.
+- `npx playwright test --project=web-ui-unauthenticated src/test/web-ui/brand-register/register-success.spec.ts` passed with `1 passed`.
+
+Token usage:
+
+- Total: Not available in this interface
+- Input: Not available in this interface
+- Output: Not available in this interface
+
+Reasoning summary:
+
+- The worktree contained both the new password-logging change and earlier
+  uncommitted brand success work, so the right approach was to validate the
+  combined registration surface and ship one coherent registration commit.

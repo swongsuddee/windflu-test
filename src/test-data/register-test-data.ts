@@ -6,14 +6,22 @@ export type BrandRegisterAccountData = {
   phone: string;
 };
 
-export const brandRegisterPasswordReference =
-  '`src/test-data/register-test-data.ts` default valid password';
-
 function createRegisterTimestamp() {
   return new Date()
     .toISOString()
     .replace(/[-:.TZ]/g, '')
     .slice(0, 14);
+}
+
+function createPasswordRandomSegment() {
+  return Math.random().toString(36).slice(2, 8);
+}
+
+function createValidRegisterPassword() {
+  const timestamp = createRegisterTimestamp().slice(-6);
+  const randomSegment = createPasswordRandomSegment();
+
+  return `Wf${timestamp}${randomSegment}Aa1!`;
 }
 
 export function createBrandRegisterAccountData(): BrandRegisterAccountData {
@@ -30,12 +38,13 @@ export function createBrandRegisterAccountData(): BrandRegisterAccountData {
 
 export function createValidBrandRegisterAccountData(): BrandRegisterAccountData {
   const timestamp = createRegisterTimestamp();
+  const password = createValidRegisterPassword();
 
   return {
     contactName: `jojoetest${timestamp}`,
     email: `jojoetest${timestamp}@example.com`,
-    password: 'Password123!',
-    confirmPassword: 'Password123!',
+    password,
+    confirmPassword: password,
     phone: '0812345678',
   };
 }
@@ -63,16 +72,14 @@ export type CreatorRegisterAccountData = {
   confirmPassword: string;
 };
 
-export const creatorRegisterPasswordReference =
-  '`src/test-data/register-test-data.ts` default valid password';
-
 export function createValidCreatorRegisterAccountData(): CreatorRegisterAccountData {
   const timestamp = createRegisterTimestamp();
+  const password = createValidRegisterPassword();
 
   return {
     email: `jojoetest${timestamp}@example.com`,
-    password: 'Password123!',
-    confirmPassword: 'Password123!',
+    password,
+    confirmPassword: password,
   };
 }
 

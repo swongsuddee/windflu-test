@@ -4,7 +4,6 @@ import {
   createCreatorPersonalProfileData,
   createCreatorSocialProfileData,
   createValidCreatorRegisterAccountData,
-  creatorRegisterPasswordReference,
 } from '../../../test-data/register-test-data';
 import { appendRegisterSuccessAccount } from '../../../util-services/register-success-account-log.service';
 
@@ -28,7 +27,7 @@ test.describe('creator registration success flow', () => {
       email: accountData.email,
       role: 'Creator',
       status: 'Created',
-      passwordReference: creatorRegisterPasswordReference,
+      password: accountData.password,
       notes: `Recorded from ${testInfo.title}`,
     });
 

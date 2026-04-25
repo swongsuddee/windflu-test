@@ -1,3 +1,5 @@
+/// <reference types="node" />
+
 import { existsSync, readFileSync } from 'fs';
 import { defineConfig, devices } from '@playwright/test';
 import { devStorageStatePath } from './playwright/auth-storage';

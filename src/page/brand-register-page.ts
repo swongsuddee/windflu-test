@@ -3,6 +3,7 @@ import { BasePage } from './base-page';
 import type { BrandProfileData, BrandRegisterAccountData } from '../test-data/register-test-data';
 
 export class BrandRegisterPage extends BasePage {
+  readonly acceptCookiesButton = this.page.getByRole('button', { name: 'ACCEPT' });
   readonly accountHeading = this.page.getByRole('heading', { name: 'ข้อมูลบัญชี' });
   readonly brandHeading = this.page.getByRole('heading', { name: 'ข้อมูลแบรนด์' });
   readonly contactNameInput = this.page.getByPlaceholder('ชื่อ-นามสกุล');
@@ -12,13 +13,23 @@ export class BrandRegisterPage extends BasePage {
   readonly phoneInput = this.page.getByPlaceholder('08X-XXX-XXXX');
   readonly nextButton = this.page.getByRole('button', { name: 'ถัดไป' });
   readonly companyNameInput = this.page.getByPlaceholder('เช่น Thai Tea Co.');
-  readonly industryCombobox = this.page.getByRole('combobox');
-  readonly readMoreButton = this.page.getByRole('button', { name: 'อ่านเพิ่มเติม →' });
-  readonly acceptPolicyButton = this.page.getByRole('button', {
-    name: 'ยอมรับข้อตกลงนี้',
-  });
+  readonly industryCombobox = this.page.getByRole('combobox').first();
+  readonly privacyPolicyCard = this.page
+    .getByText('Privacy Brand')
+    .locator('xpath=ancestor::div[contains(@class,"rounded-2xl")][1]');
+  readonly termsPolicyCard = this.page
+    .getByText('Term & Con Brand')
+    .locator('xpath=ancestor::div[contains(@class,"rounded-2xl")][1]');
+  readonly agreementPolicyCard = this.page
+    .getByText('Agreement Brand')
+    .locator('xpath=ancestor::div[contains(@class,"rounded-2xl")][1]');
+  readonly privacyPolicyButton = this.privacyPolicyCard.getByRole('button');
+  readonly termsPolicyButton = this.termsPolicyCard.getByRole('button');
+  readonly agreementPolicyButton = this.agreementPolicyCard.getByRole('button');
   readonly submitButton = this.page.getByRole('button', { name: 'สมัครสมาชิก' });
   readonly backButton = this.page.getByRole('button', { name: 'ย้อนกลับ' });
+  readonly successHeading = this.page.getByText('สมัครสำเร็จแล้ว!');
+  readonly loginButton = this.page.getByRole('button', { name: 'เข้าสู่ระบบ' });
 
   constructor(page: Page) {
     super(page);
@@ -26,6 +37,12 @@ export class BrandRegisterPage extends BasePage {
 
   async gotoRegister() {
     await this.goto('/brand/register');
+  }
+
+  async acceptCookiesIfVisible() {
+    if (await this.acceptCookiesButton.isVisible().catch(() => false)) {
+      await this.acceptCookiesButton.click();
+    }
   }
 
   async fillMismatchedAccountData(accountData: BrandRegisterAccountData) {
@@ -56,14 +73,24 @@ export class BrandRegisterPage extends BasePage {
     await this.page.getByRole('option', { name: brandProfile.industry }).click();
   }
 
-  async acceptVisiblePolicy() {
-    await this.readMoreButton.click();
-    await expect(this.acceptPolicyButton).toBeVisible();
-    await this.acceptPolicyButton.click();
+  async acceptAllVisiblePolicies() {
+    await this.privacyPolicyButton.click();
+    await this.termsPolicyButton.click();
+    await this.agreementPolicyButton.click();
   }
 
   async submitRegistration() {
     await this.submitButton.click();
+  }
+
+  async submitSuccessfulRegistration(
+    accountData: BrandRegisterAccountData,
+    brandProfile: BrandProfileData
+  ) {
+    await this.continueToBrandStep(accountData);
+    await this.fillBrandProfile(brandProfile);
+    await this.acceptAllVisiblePolicies();
+    await this.expectOnSuccessState();
   }
 
   async expectStillOnStepOne() {
@@ -75,5 +102,14 @@ export class BrandRegisterPage extends BasePage {
     await this.expectPath(/\/brand\/register$/);
     await expect(this.brandHeading).toBeVisible();
     await expect(this.companyNameInput).toBeVisible();
+  }
+
+  async expectOnSuccessState() {
+    await this.expectPath(/\/brand\/register$/);
+    await expect(this.successHeading).toBeVisible();
+    await expect(
+      this.page.getByText('ยินดีต้อนรับสู่ Windflu Brands — สร้างแคมเปญแรกได้เลย')
+    ).toBeVisible();
+    await expect(this.loginButton).toBeVisible();
   }
 }
