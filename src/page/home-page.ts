@@ -6,9 +6,10 @@ export class HomePage extends BasePage {
   readonly campaignsLink = this.page.getByRole('link', { name: 'Campaigns' });
   readonly logoLink = this.page.getByRole('link', { name: 'Windflu' }).first();
   readonly clipperCta = this.page.getByRole('button', { name: 'สมัครเป็น Clipper' });
-  readonly brandGrowthCta = this.page.getByRole('button', { name: 'สำหรับแบรนด์ที่ต้องการเติบโต' });
-  readonly privacyLink = this.page.getByRole('link', { name: 'นโยบายความเป็นส่วนตัว' });
-  readonly termsLink = this.page.getByRole('link', { name: 'ข้อกำหนดและเงื่อนไข' });
+  readonly brandGrowthCta = this.page.getByRole('button', { name: 'สำหรับแบรนด์ที่อยากไวรัล' });
+  readonly footer = this.page.getByRole('contentinfo');
+  readonly privacyLink = this.footer.getByRole('link', { name: 'นโยบายความเป็นส่วนตัว' });
+  readonly termsLink = this.footer.getByRole('link', { name: 'ข้อกำหนดและเงื่อนไข' });
   readonly leadSectionTitle = this.page.getByText('เริ่มต้นแคมเปญของคุณวันนี้');
   readonly leadNameInput = this.page.getByPlaceholder('กรอกชื่อของคุณ');
   readonly leadEmailInput = this.page.getByPlaceholder('name@company.com');
@@ -17,7 +18,7 @@ export class HomePage extends BasePage {
   );
   readonly leadSubmitButton = this.page.getByRole('button', { name: 'ส่งข้อมูลเพื่อเริ่มงาน' });
   readonly budgetSelect = this.page.locator('select').first();
-  readonly campaignTypeSelect = this.page.locator('select').nth(1);
+  readonly categorySelect = this.page.locator('select').nth(1);
 
   constructor(page: Page) {
     super(page);
@@ -43,7 +44,7 @@ export class HomePage extends BasePage {
     await this.leadNameInput.fill('QA Brand');
     await this.leadEmailInput.fill('qa@example.com');
     await this.budgetSelect.selectOption({ label: '50,000 – 200,000 บาท' });
-    await this.campaignTypeSelect.selectOption({ label: 'เกม / แอปพลิเคชัน' });
+    await this.categorySelect.selectOption({ label: 'เกม' });
     await this.leadDetailsInput.fill('Automation pre-submit check');
   }
 }

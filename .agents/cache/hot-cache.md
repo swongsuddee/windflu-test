@@ -47,8 +47,17 @@ Playwright test project for Windflu web UI/API testing against `https://www.wind
 - Authenticated user test design:
   `src/test/web-ui/authenticated-user/authenticated-user-test-design.md`
 - Standalone exploration diagrams: `src/test-design/*.md`
-- Latest exploration diagrams: `src/test-design/website-exploration-flow-diagrams.md`
-- Authenticated exploration diagrams: `src/test-design/authenticated-exploration-flow-diagrams.md`
+- Latest unauthenticated exploration:
+  `src/test-design/exploration-unauthenticated-user-actions.md`
+- Register exploration splits:
+  `src/test-design/exploration-brand-register-flow.md` and
+  `src/test-design/exploration-creator-register-flow.md`
+- Homepage lead-form exploration:
+  `src/test-design/exploration-homepage-brand-lead-form.md`
+- Campaign-detail exploration:
+  `src/test-design/exploration-campaign-detail.md`
+- Authenticated exploration:
+  `src/test-design/exploration-authenticated-user-actions.md`
 
 ## Existing Global Skills Used By Project
 
@@ -77,6 +86,29 @@ Authenticated dashboard coverage is implemented for:
 
 ## Recent Changes
 
+- 2026-04-25: Split homepage unauthenticated navigation coverage into
+  single-purpose cases so each case validates one outcome only:
+  `PUB-002` brand link, `PUB-030` campaigns link, and `PUB-031` logo-home
+  link. Updated the matching homepage test-design file and revalidated the
+  homepage suite.
+- 2026-04-25: Regrouped unauthenticated Web UI implementation to match the
+  latest exploration split and current live site behavior. Updated homepage,
+  brand lead, creator campaigns, campaign detail, and legal policy coverage;
+  refreshed related POM selectors; and synced the matching test-design and
+  exploration docs.
+- 2026-04-25: Added incident `INC-003` to track privacy/terms content as an
+  in-progress implementation area until the user confirms it is ready.
+- 2026-04-25: Applied clarified unauthenticated expectations, split homepage
+  brand lead-form behavior into its own exploration file, and raised the
+  unauthenticated exploration confidence to a final state.
+- 2026-04-25: Split campaign-detail exploration out of the unauthenticated
+  master document into `src/test-design/exploration-campaign-detail.md`.
+- 2026-04-25: Tightened the website exploration policy so final exploration
+  output must have confidence greater than 95%, and lower-confidence cases must
+  ask the user for clarification before finalization.
+- 2026-04-25: Renamed standalone exploration docs to the `exploration-...`
+  convention, broadened the unauthenticated exploration scope, and split
+  brand/creator registration details into dedicated exploration files.
 - 2026-04-25: Created commit `aa9fc83`
   `chore(project): migrate tests to src and vendor agent skills`; one follow-up
   commit remains for `playwright.config.ts` before push.
@@ -275,9 +307,57 @@ Authenticated dashboard coverage is implemented for:
   shared process.
 - The hot cache remains the primary startup context source; the prompt activity
   log is now a write-first audit trail and fallback source only.
+- Exploration outputs with confidence at or below 95% are now considered
+  incomplete and must trigger clarification rather than being treated as final.
+- Unauthenticated users should not be able to access creator-session-only areas
+  such as dashboard, my-work, payouts, profile, or submit flows.
+- Terms/privacy content and `/contact` remain in-progress implementation areas
+  and should stay out of stable detailed assertions until the user confirms
+  completion.
+- Legal policy implementation readiness is tracked in incident `INC-003`.
+- Baseline unauthenticated coverage should follow the current live public
+  contract: homepage CTA text `สำหรับแบรนด์ที่อยากไวรัล`, campaign listing
+  empty state, unavailable campaign detail, and `/creator/*` guest redirects to
+  `/login?next=...`.
 
 ## Validation Status
 
+- `npx playwright test --project=web-ui-unauthenticated src/test/web-ui/homepage-unauthenticated/homepage-unauthenticated.spec.ts`
+  passed on 2026-04-25 with `6 passed` after splitting homepage navigation into
+  single-purpose cases.
+- `npm run format:check` passed on 2026-04-25 after the unauthenticated test
+  regrouping and live-site alignment update.
+- `npm run lint` passed on 2026-04-25 after the unauthenticated test
+  regrouping and live-site alignment update.
+- `npx playwright test --project=web-ui-unauthenticated src/test/web-ui/homepage-unauthenticated/homepage-unauthenticated.spec.ts src/test/web-ui/homepage-brand-lead/homepage-brand-lead.spec.ts src/test/web-ui/creator-campaigns/creator-campaigns.spec.ts src/test/web-ui/campaign-detail/campaign-detail.spec.ts src/test/web-ui/legal-policy/legal-policy.spec.ts`
+  passed on 2026-04-25 with `24 passed`.
+- `npx prettier --write .agents/review-notes/incident-log.md` passed on
+  2026-04-25 after adding `INC-003`.
+- `npm run format:check` passed on 2026-04-25 after the `INC-003` incident-log
+  update.
+- `npm run lint` passed on 2026-04-25 after the `INC-003` incident-log update.
+- `npx prettier --write src/test-design/exploration-unauthenticated-user-actions.md src/test-design/exploration-homepage-brand-lead-form.md src/test-design/exploration-campaign-detail.md`
+  passed on 2026-04-25.
+- `npx prettier --write .agents/review-notes/incident-log.md` passed on
+  2026-04-25 after elevated file-permission access.
+- `npm run format:check` passed on 2026-04-25 after the clarified
+  unauthenticated-flow update.
+- `npm run lint` passed on 2026-04-25 after the clarified unauthenticated-flow
+  update.
+- `npx prettier --write src/test-design/exploration-campaign-detail.md src/test-design/exploration-unauthenticated-user-actions.md`
+  passed on 2026-04-25.
+- `npm run format:check` passed on 2026-04-25 after the campaign-detail
+  exploration split.
+- `npm run lint` passed on 2026-04-25 after the campaign-detail exploration
+  split.
+- `npm run format:check` passed on 2026-04-25 after the exploration-confidence
+  policy update.
+- `npm run lint` passed on 2026-04-25 after the exploration-confidence policy
+  update.
+- `npx prettier --write src/test-design/exploration-authenticated-user-actions.md src/test-design/exploration-brand-register-flow.md src/test-design/exploration-creator-register-flow.md src/test-design/exploration-unauthenticated-user-actions.md`
+  passed on 2026-04-25.
+- `npm run lint` passed on 2026-04-25 after the exploration-doc rename/split
+  update.
 - `npm run lint` passed again on 2026-04-25 before the follow-up config commit.
 - `npm run format:check` passed again on 2026-04-25 before the follow-up
   config commit.

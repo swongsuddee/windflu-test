@@ -23,6 +23,10 @@ Before starting any task in this project:
 7. Do not read `.agents/cache/prompt-activity-log.md` during normal task startup.
    Read it only when `.agents/cache/hot-cache.md` is missing and recent task
    history is needed to rebuild context.
+8. For website exploration work, final exploration output must have confidence
+   greater than 95%. If there is doubt or unclear behavior that keeps
+   confidence at 95% or below, ask the user for clarification before treating
+   the exploration as final.
 
 Provider switching notes:
 

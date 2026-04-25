@@ -93,5 +93,5 @@ stateDiagram-v2
 - This authenticated design is currently creator-only.
 - The first assertion in authenticated specs should be that the route stays
   outside the login page.
-- Brand authenticated coverage should be added only after brand registration and
-  reusable credentials exist.
+- Brand authenticated coverage should be added only after brand registration
+  and reusable credentials exist.

@@ -1,6 +1,6 @@
 # Authenticated User Test Design
 
-Source: prepared from `src/test-design/authenticated-exploration-flow-diagrams.md`
+Source: prepared from `src/test-design/exploration-authenticated-user-actions.md`
 and the Playwright setup project.
 
 Implementation: `src/test/web-ui/authenticated-user/authenticated-user.spec.ts`

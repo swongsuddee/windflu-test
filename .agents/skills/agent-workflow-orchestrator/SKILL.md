@@ -87,6 +87,8 @@ For website test work, always follow this order:
 7. Update hot cache and prompt activity log.
 
 Do not jump directly from exploration to implementation when test design is requested.
+Do not treat exploration as final unless the exploration confidence is greater
+than 95%; otherwise ask the user for clarification before continuing.
 
 ## Mermaid Diagram Rules
 
@@ -114,6 +116,9 @@ For this project:
 - Keep feature specs and their matching test-design Markdown files together in
   feature folders under `src/test/web-ui/<feature>/`.
 - Keep standalone exploration diagrams under `src/test-design/`.
+- Name standalone exploration documents under `src/test-design/` with the
+  prefix `exploration-`, for example
+  `src/test-design/exploration-unauthenticated-user-actions.md`.
 - Track product errors/incidents that need developer fix and QA retest in
   `.agents/review-notes/incident-log.md`; keep incidents out of active product
   tests until fixed, retest after fixes, then remove active incidents after

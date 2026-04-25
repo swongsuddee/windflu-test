@@ -49,6 +49,260 @@ Reasoning summary:
 - ...
 ```
 
+## 2026-04-25 - Add Legal Policy Implementation Incident
+
+Prompt summary:
+
+- User requested adding an incident-log entry to track that terms and privacy
+  are still under implementation and they will confirm later when ready.
+
+Skills/tools used:
+
+- Project `agent-workflow-orchestrator`.
+- Local file editing.
+- Validation command: `npx prettier --write`.
+
+Actions:
+
+- Added `INC-003` to `.agents/review-notes/incident-log.md` for the public
+  legal policy implementation status.
+- Updated project memory to record that legal policy readiness is now tracked
+  explicitly in the incident log.
+
+Result:
+
+- Terms and privacy implementation status is now tracked as a dedicated active
+  incident rather than only as a note inside exploration docs.
+
+Validation:
+
+- `npx prettier --write .agents/review-notes/incident-log.md` passed.
+- `npm run format:check` passed.
+- `npm run lint` passed.
+
+Token usage:
+
+- Total: Not available in this interface
+- Input: Not available in this interface
+- Output: Not available in this interface
+
+Reasoning summary:
+
+- Since you explicitly said privacy and terms are still under implementation,
+  they should be tracked as a separate incident so future exploration and test
+  design work can treat them as intentionally unstable until you confirm
+  completion.
+
+## 2026-04-25 - Apply Clarified Guest Access Rules
+
+Prompt summary:
+
+- User clarified that `/contact` is still under implementation, unauthenticated
+  users must not access creator-session-only areas, terms/privacy are still
+  under implementation, and homepage brand lead-form behavior should be split
+  into its own exploration file.
+
+Skills/tools used:
+
+- Project `agent-workflow-orchestrator`.
+- `website-exploration-flow`.
+- Local file editing.
+- Validation commands: `npx prettier --write`.
+
+Actions:
+
+- Updated `src/test-design/exploration-unauthenticated-user-actions.md` with
+  the clarified guest-access expectations and raised it to final confidence.
+- Added `src/test-design/exploration-homepage-brand-lead-form.md`.
+- Updated `src/test-design/exploration-campaign-detail.md` so guest submit
+  behavior is documented as blocked from creator-session access.
+- Updated `.agents/review-notes/incident-log.md` so `INC-001` now notes that
+  `/contact` is still under implementation.
+- Updated project memory to reference the new lead-form exploration file.
+
+Result:
+
+- The unauthenticated master exploration is now final-confidence and aligned
+  with the clarified product expectations.
+- Homepage lead-form behavior now has its own standalone exploration file.
+- `/contact`, terms, and privacy remain tracked as in-progress implementation
+  areas rather than stable final-behavior assertions.
+
+Validation:
+
+- `npx prettier --write src/test-design/exploration-unauthenticated-user-actions.md src/test-design/exploration-homepage-brand-lead-form.md src/test-design/exploration-campaign-detail.md`
+  passed.
+- `npx prettier --write .agents/review-notes/incident-log.md` passed after
+  elevated file-permission access.
+- `npm run format:check` passed.
+- `npm run lint` passed.
+
+Token usage:
+
+- Total: Not available in this interface
+- Input: Not available in this interface
+- Output: Not available in this interface
+
+Reasoning summary:
+
+- The clarified expected behavior was enough to finalize the broad
+  unauthenticated exploration, but homepage lead-form behavior still deserved
+  its own focused document so the master doc stays scoped to general guest
+  actions.
+
+## 2026-04-25 - Split Campaign Detail Exploration
+
+Prompt summary:
+
+- User requested splitting the `Campaign Detail` part out of
+  `src/test-design/exploration-unauthenticated-user-actions.md`.
+
+Skills/tools used:
+
+- Project `agent-workflow-orchestrator`.
+- `website-exploration-flow`.
+- Local file editing.
+
+Actions:
+
+- Removed campaign-detail-specific inventory, transitions, and Mermaid branches
+  from `src/test-design/exploration-unauthenticated-user-actions.md`.
+- Added `src/test-design/exploration-campaign-detail.md` as the dedicated
+  standalone exploration document for unauthenticated campaign detail behavior.
+- Updated project memory to reference the new exploration file.
+
+Result:
+
+- The unauthenticated master exploration document is now more focused on broad
+  guest actions.
+- Campaign detail exploration is maintained separately in its own
+  `exploration-...` file.
+
+Validation:
+
+- File-content updates completed.
+- `npx prettier --write src/test-design/exploration-campaign-detail.md src/test-design/exploration-unauthenticated-user-actions.md`
+  passed.
+- `npm run format:check` passed.
+- `npm run lint` passed.
+
+Token usage:
+
+- Total: Not available in this interface
+- Input: Not available in this interface
+- Output: Not available in this interface
+
+Reasoning summary:
+
+- Campaign detail had enough depth to justify its own exploration artifact, and
+  keeping it separate makes the main unauthenticated document easier to use for
+  broader guest-flow coverage planning.
+
+## 2026-04-25 - Raise Exploration Confidence Threshold
+
+Prompt summary:
+
+- User requested updating the exploration policy so final exploration output
+  must have confidence greater than 95%, and unclear areas should trigger
+  clarification questions.
+
+Skills/tools used:
+
+- Project `agent-workflow-orchestrator`.
+- `website-exploration-flow`.
+- Local file editing.
+
+Actions:
+
+- Updated `.agents/skills/website-exploration-flow/SKILL.md` so confidence at
+  95% or below cannot be treated as final and must trigger clarification.
+- Updated `.agents/skills/agent-workflow-orchestrator/SKILL.md` to enforce the
+  same rule in the project website QA workflow.
+- Updated `AGENTS.md` so the project-level instruction matches the exploration
+  confidence rule.
+
+Result:
+
+- Final website exploration output in this repo now requires confidence greater
+  than 95%.
+- If confidence is 95% or below due to doubt, ambiguity, or unclear behavior,
+  the agent should ask the user for clarification before finalizing.
+
+Validation:
+
+- File-content updates completed.
+- `npm run format:check` passed.
+- `npm run lint` passed.
+
+Token usage:
+
+- Total: Not available in this interface
+- Input: Not available in this interface
+- Output: Not available in this interface
+
+Reasoning summary:
+
+- A “final” exploration document should only be treated as final when the
+  confidence bar is high enough. Lower-confidence outputs are better handled as
+  blocked drafts that explicitly ask for clarification.
+
+## 2026-04-25 - Split Exploration Docs And Rename With Prefix
+
+Prompt summary:
+
+- User requested updating the public website exploration file to cover more
+  unauthenticated user actions, splitting registration details into separate
+  files, and changing exploration naming so standalone exploration docs begin
+  with `exploration-`.
+
+Skills/tools used:
+
+- Project `agent-workflow-orchestrator`.
+- `website-exploration-flow`.
+- Local file editing.
+- Validation commands: `npx prettier --write`, `npm run lint`.
+
+Actions:
+
+- Replaced `src/test-design/website-exploration-flow-diagrams.md` with
+  `src/test-design/exploration-unauthenticated-user-actions.md`.
+- Split registration-specific content into
+  `src/test-design/exploration-brand-register-flow.md` and
+  `src/test-design/exploration-creator-register-flow.md`.
+- Renamed the authenticated exploration document to
+  `src/test-design/exploration-authenticated-user-actions.md`.
+- Updated the orchestrator skill to require the `exploration-` prefix for
+  standalone exploration documents under `src/test-design/`.
+- Updated the authenticated-user test design source reference.
+
+Result:
+
+- The main public exploration document is now focused on unauthenticated user
+  actions.
+- Brand and creator registration exploration now live in dedicated files.
+- The repo now has an explicit standalone exploration naming policy.
+
+Validation:
+
+- `npx prettier --write src/test-design/exploration-authenticated-user-actions.md src/test-design/exploration-brand-register-flow.md src/test-design/exploration-creator-register-flow.md src/test-design/exploration-unauthenticated-user-actions.md`
+  passed.
+- `npm run lint` passed.
+- `npm run format:check` was run before formatting and reported style drift in
+  the four new exploration files.
+
+Token usage:
+
+- Total: Not available in this interface
+- Input: Not available in this interface
+- Output: Not available in this interface
+
+Reasoning summary:
+
+- The previous master exploration doc mixed broad guest navigation with
+  registration-specific detail. Splitting the registration flows out makes the
+  main unauthenticated doc easier to use for coverage design and gives the repo
+  a clearer naming convention for future exploration artifacts.
+
 ## 2026-04-25 - Analyze Changes And Commit Push To Git
 
 Prompt summary:
@@ -1631,3 +1885,102 @@ Token usage:
 Reasoning summary:
 
 - A durable project log was needed alongside the hot cache because the cache is concise working memory, while the activity log records prompt/result history for analysis.
+
+## 2026-04-25 - Regroup Unauthenticated Tests To Match New Exploration
+
+Prompt summary:
+
+- User asked to regroup the test implementation and review the unauthenticated
+  user tests so they match the new exploration split.
+
+Skills/tools used:
+
+- `agent-workflow-orchestrator`
+- `playwright-skill`
+- Local file inspection/editing with `sed`, `rg`, and `apply_patch`
+- Validation with `npm`, `prettier`, and Playwright
+
+Actions:
+
+- Regrouped homepage brand lead coverage into its dedicated feature flow and
+  aligned homepage selectors with the live CTA/footer behavior.
+- Updated creator-campaign and campaign-detail page objects/specs to cover the
+  current public empty-state listing, unavailable campaign detail, and guest
+  redirects from `/creator/*` to `/login?next=...`.
+- Updated related test-design docs and exploration docs to remove stale seeded
+  campaign assumptions and reflect the current live contract.
+- Probed live protected-route behavior with Playwright before finalizing the
+  auth-gate assertions.
+- Updated `.agents/cache/hot-cache.md` with the new implementation and
+  validation state.
+
+Result:
+
+- Unauthenticated implementation, design docs, and exploration docs are aligned
+  to the current live site behavior.
+- Focused unauthenticated Playwright coverage is green again.
+
+Validation:
+
+- `npm run format:check` passed.
+- `npm run lint` passed.
+- `npx playwright test --project=web-ui-unauthenticated src/test/web-ui/homepage-unauthenticated/homepage-unauthenticated.spec.ts src/test/web-ui/homepage-brand-lead/homepage-brand-lead.spec.ts src/test/web-ui/creator-campaigns/creator-campaigns.spec.ts src/test/web-ui/campaign-detail/campaign-detail.spec.ts src/test/web-ui/legal-policy/legal-policy.spec.ts` passed with `24 passed`.
+
+Token usage:
+
+- Total: Not available in this interface
+- Input: Not available in this interface
+- Output: Not available in this interface
+
+Reasoning summary:
+
+- The current live site had drifted from older exploration assumptions, so the
+  safe path was to realign tests to observed public behavior instead of trying
+  to preserve historical seeded-content assertions.
+
+## 2026-04-25 - Split Homepage Navigation Into Single-Purpose Cases
+
+Prompt summary:
+
+- User requested the homepage unauthenticated cases be updated so one test case
+  stands for one validation purpose, specifically splitting the combined
+  `PUB-002` navigation coverage.
+
+Skills/tools used:
+
+- `agent-workflow-orchestrator`
+- `playwright-skill`
+- Local file inspection/editing with `sed`, `rg`, and `apply_patch`
+- Validation with `prettier`, `eslint`, and Playwright
+
+Actions:
+
+- Split the combined homepage navigation spec into separate one-purpose cases:
+  `PUB-002` for `สำหรับแบรนด์`, `PUB-030` for `Campaigns`, and `PUB-031` for
+  the Windflu logo link.
+- Updated
+  `src/test/web-ui/homepage-unauthenticated/homepage-unauthenticated-test-design.md`
+  to match the new case structure and IDs.
+- Revalidated the homepage unauthenticated suite against the live site.
+
+Result:
+
+- Homepage navigation coverage now follows the preferred one-case,
+  one-validation pattern.
+
+Validation:
+
+- `npm run lint` passed.
+- `npx playwright test --project=web-ui-unauthenticated src/test/web-ui/homepage-unauthenticated/homepage-unauthenticated.spec.ts` passed with `6 passed`.
+
+Token usage:
+
+- Total: Not available in this interface
+- Input: Not available in this interface
+- Output: Not available in this interface
+
+Reasoning summary:
+
+- Splitting the combined navigation case was cleaner than keeping multiple
+  route assertions under one ID, and it keeps the implementation aligned with
+  the test-design intent the user asked for.

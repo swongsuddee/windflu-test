@@ -43,6 +43,7 @@ Ask only when accurate exploration is blocked by:
 - hidden modules
 - unclear status meaning
 - unclear transition rules
+- any uncertainty that would keep final confidence at 95% or below
 
 Use this format:
 
@@ -77,9 +78,16 @@ Confidence level: XX%
 
 Interpretation:
 
-- 95-100%: reliable final output
-- 80-94%: draft with assumptions
-- below 80%: clarification required
+- above 95%: reliable final output
+- 95% or below: do not treat the exploration as final; ask targeted
+  clarification questions before finalizing
+
+Finalization rule:
+
+- Final exploration output must have confidence greater than 95%.
+- If confidence is 95% or below because of doubt, ambiguity, missing access, or
+  unclear behavior, stop and ask the user for clarification instead of
+  pretending the document is final.
 
 ## Output Structure
 
@@ -91,7 +99,7 @@ For website exploration, provide:
 4. Mermaid Flow Diagram
 5. Mermaid State Diagram, if status lifecycle behavior exists
 6. QA Notes
-7. Clarification Points, if needed
+7. Clarification Points, when any uncertainty exists
 8. Confidence level
 
 ## Transition Flow Format
@@ -133,6 +141,9 @@ stateDiagram-v2
 
 Before handing off to test design:
 
+- Only hand off as final when confidence is greater than 95%.
+- If confidence is 95% or below, ask for clarification first and mark blocked
+  areas explicitly.
 - State which journeys are ready for test design.
 - State which journeys are blocked or assumption-based.
 - Recommend logical test modules from the explored flows.
