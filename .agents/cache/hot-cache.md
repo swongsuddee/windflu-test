@@ -86,6 +86,12 @@ Authenticated dashboard coverage is implemented for:
 
 ## Recent Changes
 
+- 2026-04-25: Re-explored creator registration and raised
+  `src/test-design/exploration-creator-register-flow.md` from draft to
+  high-confidence status. Confirmed the live 3-step flow
+  `Account -> Social -> Personal`, the custom legal-acceptance button, social
+  step validation requiring at least one connected account, and blank personal
+  step validation for first name, last name, display name, and phone.
 - 2026-04-25: Fixed the local Node 18 install warning by aligning the lint
   toolchain to Node 18-compatible versions: pinned `typescript-eslint` to
   `8.44.1` and downgraded `typescript` to `5.9.3`, then refreshed
@@ -326,6 +332,12 @@ Authenticated dashboard coverage is implemented for:
 
 ## Validation Status
 
+- `npx prettier --write src/test-design/exploration-creator-register-flow.md`
+  passed on 2026-04-25 after the live creator-registration exploration update.
+- `npm run format:check` passed on 2026-04-25 after the
+  creator-registration exploration update.
+- `npm run lint` passed on 2026-04-25 after the creator-registration
+  exploration update.
 - `npm install` passed on 2026-04-25 after pinning Node 18-compatible
   TypeScript lint dependencies.
 - `npm i --save-dev @types/node` passed on 2026-04-25 without the prior

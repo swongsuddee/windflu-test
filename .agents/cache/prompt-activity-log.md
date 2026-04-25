@@ -2034,3 +2034,51 @@ Reasoning summary:
 - The cleanest fix was to align the TypeScript lint stack to a Node 18-friendly
   release line instead of only documenting a higher Node requirement, because
   the user explicitly wanted the warning removed on the current environment.
+
+## 2026-04-25 - Explore Creator Registration
+
+Prompt summary:
+
+- User asked to explore the creator registration part.
+
+Skills/tools used:
+
+- `agent-workflow-orchestrator`
+- `website-exploration-flow`
+- Live probing with Playwright via local `node` scripts
+- Local file editing with `apply_patch`
+
+Actions:
+
+- Reviewed the existing low-confidence
+  `src/test-design/exploration-creator-register-flow.md` draft.
+- Probed the live `/register` flow with the project dev storage state to
+  observe the account, social, and personal steps directly.
+- Confirmed empty account-step validation, the custom legal-acceptance button,
+  social-step fields and validation, personal-step fields, country select, and
+  blank submit validation on the personal step.
+- Updated the creator-registration exploration doc to reflect the observed
+  behavior and raised the confidence above the project finalization threshold.
+
+Result:
+
+- Creator registration exploration is now a high-confidence standalone
+  exploration document with observed transitions and field inventory.
+
+Validation:
+
+- `npx prettier --write src/test-design/exploration-creator-register-flow.md` passed.
+- `npm run format:check` passed.
+- `npm run lint` passed.
+
+Token usage:
+
+- Total: Not available in this interface
+- Input: Not available in this interface
+- Output: Not available in this interface
+
+Reasoning summary:
+
+- The previous creator-registration document was below the required confidence
+  threshold, so the right move was to re-probe the live flow and replace
+  assumptions with direct observations before treating the exploration as final.
