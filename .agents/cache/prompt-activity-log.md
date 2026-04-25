@@ -2082,3 +2082,350 @@ Reasoning summary:
 - The previous creator-registration document was below the required confidence
   threshold, so the right move was to re-probe the live flow and replace
   assumptions with direct observations before treating the exploration as final.
+
+## 2026-04-25 21:37:27 +0700
+
+Prompt summary:
+
+- Implement test design for the creator register flow.
+
+Skills/tools used:
+
+- `agent-workflow-orchestrator`
+- `test-design-zephyr`
+- Local repository inspection with `sed`, `rg`, and `tail`
+- Local file editing with `apply_patch`
+
+Actions:
+
+- Read the project hot cache, active provider selector, orchestrator skill, and
+  hot-cache policy before changing files.
+- Reviewed the finalized creator-registration exploration and the existing
+  creator feature test-design files.
+- Replaced the stale brand-registration placeholder in
+  `src/test/web-ui/creator-register-flow/register-flow-test-design.md` with a
+  creator-specific Zephyr-style design covering page access, account-step
+  validation, agreement/legal-link behavior, social-step validation, personal
+  validation, and back navigation.
+- Trimmed `.agents/cache/hot-cache.md` to the current policy format and updated
+  it with the new task result and next useful action.
+
+Result:
+
+- Creator registration now has a feature-local final test design aligned with
+  the 97% confidence exploration output.
+
+Validation:
+
+- `npx prettier --check src/test/web-ui/creator-register-flow/register-flow-test-design.md .agents/cache/hot-cache.md .agents/cache/prompt-activity-log.md` passed.
+- `npm run format:check` failed because of repo-wide formatting issues in `.agents/cache/hot-cache.md` before the local fix and an unrelated existing file `src/test/web-ui/creator-login.setup.ts`.
+
+Token usage:
+
+- Total: Not available in this interface
+- Input: Not available in this interface
+- Output: Not available in this interface
+
+Reasoning summary:
+
+- The exploration already met the project confidence threshold, so the correct
+  next step was to convert the observed creator flow into focused, non-duplicated
+  coverage rather than keep the stale brand placeholder.
+
+## 2026-04-25 21:58:00 +0700
+
+Prompt summary:
+
+- Recheck and update the creator register spec to use the moved `/src` service
+  path and the `.service.ts` naming.
+
+Skills/tools used:
+
+- `agent-workflow-orchestrator`
+- Local repository inspection with `rg` and `sed`
+- Local file editing with `apply_patch`
+
+Actions:
+
+- Located the current service file and confirmed the spec still imported the old
+  relative path.
+- Renamed `src/util-services/register-success-account-log-service.ts` to
+  `src/util-services/register-success-account-log.service.ts`.
+- Updated
+  `src/test/web-ui/creator-register-flow/register-flow.spec.ts`
+  to import the renamed service from the `src/util-services` path.
+- Corrected the service’s output target from the stale
+  `src/test/web-ui/register-flow/register-success-accounts.md` path to
+  `src/test/web-ui/creator-register-flow/register-success-accounts.md`.
+
+Result:
+
+- The creator register spec now points to the renamed service file, and the
+  service writes to the current creator feature directory.
+
+Validation:
+
+- `rg -n "register-success-account-log-service|register-success-account-log\\.service|creator-register-flow/register-success-accounts" src` passed.
+- `npx prettier --check src/test/web-ui/creator-register-flow/register-flow.spec.ts src/util-services/register-success-account-log.service.ts` passed.
+
+Token usage:
+
+- Total: Not available in this interface
+- Input: Not available in this interface
+- Output: Not available in this interface
+
+Reasoning summary:
+
+- The import fix alone would still leave the service writing to a stale feature
+  path, so the safe change was to update both the service filename and its
+  internal output location together.
+
+## 2026-04-25 22:03:00 +0700
+
+Prompt summary:
+
+- Rename the creator register test design file so it shares the same base name
+  as the spec, using `.design.md` for design and `.spec.ts` for implementation.
+
+Skills/tools used:
+
+- `agent-workflow-orchestrator`
+- Local repository inspection with `rg`, `ls`, and `sed`
+- Local file editing with `apply_patch`
+
+Actions:
+
+- Checked the creator register feature folder and confirmed the current spec is
+  `register-flow.spec.ts`.
+- Renamed the design file from
+  `src/test/web-ui/creator-register-flow/register-flow-test-design.md` to
+  `src/test/web-ui/creator-register-flow/register-flow.design.md`.
+- Updated project memory files so they reference the new design filename.
+
+Result:
+
+- The creator register implementation and design now share the same base name:
+  `register-flow.spec.ts` and `register-flow.design.md`.
+
+Validation:
+
+- `ls src/test/web-ui/creator-register-flow` confirmed `register-flow.design.md` and `register-flow.spec.ts`.
+- `npx prettier --check src/test/web-ui/creator-register-flow/register-flow.design.md .agents/cache/hot-cache.md .agents/cache/prompt-activity-log.md` passed.
+- `rg -n 'register-flow-test-design\.md|register-flow\.design\.md' .agents src` confirmed the new filename is active; remaining old-name matches are historical prompt-log entries.
+
+Token usage:
+
+- Total: Not available in this interface
+- Input: Not available in this interface
+- Output: Not available in this interface
+
+Reasoning summary:
+
+- Matching base names makes the feature pair easier to scan and is consistent
+  with your requested `.design.md` and `.spec.ts` convention.
+
+## 2026-04-26 00:15:00 +0700
+
+Prompt summary:
+
+- Implement the remaining creator register tests from
+  `src/test/web-ui/creator-register-flow/register-flow.design.md`.
+
+Skills/tools used:
+
+- `agent-workflow-orchestrator`
+- `playwright-skill`
+- Local repository inspection with `sed`, `rg`, and `ls`
+- Local file editing with `apply_patch`
+- Live Playwright probing with local `node` scripts
+- Targeted Playwright execution with `npx playwright test`
+
+Actions:
+
+- Re-read the project hot cache, active provider selector, and Playwright skill.
+- Probed the live creator register flow with the repo’s dev storage state to
+  capture the actual account, social, and personal step selectors plus the
+  negative-path validation messages.
+- Added `src/page/creator-register-page.ts` to model the creator register flow.
+- Added creator-specific account and social test-data builders to
+  `src/test-data/register-test-data.ts`.
+- Rewrote `src/test/web-ui/creator-register-flow/register-flow.spec.ts` to
+  implement `PUB-032` through `PUB-038` from the design file.
+
+Result:
+
+- The creator register spec now matches the design and covers all currently
+  planned validation, legal-link, progression, and back-navigation cases.
+
+Validation:
+
+- `npx prettier --check src/page/creator-register-page.ts src/test/web-ui/creator-register-flow/register-flow.spec.ts src/test-data/register-test-data.ts` passed.
+- `npm run lint -- src/page/creator-register-page.ts src/test/web-ui/creator-register-flow/register-flow.spec.ts src/test-data/register-test-data.ts` passed.
+- `npx playwright test --project=web-ui-unauthenticated src/test/web-ui/creator-register-flow/register-flow.spec.ts` passed with `7 passed`.
+
+Token usage:
+
+- Total: Not available in this interface
+- Input: Not available in this interface
+- Output: Not available in this interface
+
+Reasoning summary:
+
+- The existing spec was still brand-oriented, so the correct fix was to replace
+  it with a creator-specific implementation backed by a dedicated page object
+  and live-verified selectors rather than layering more assertions onto the
+  wrong abstraction.
+
+## 2026-04-26 00:18:21 +0700
+
+Prompt summary:
+
+- Re-explore the register success flow because the current confidence does not
+  meet the project threshold.
+
+Skills/tools used:
+
+- `agent-workflow-orchestrator`
+- `website-exploration-flow`
+- Local repository inspection with `sed` and `rg`
+- Live Playwright probing with local `node` scripts
+- Local file editing with `apply_patch`
+
+Actions:
+
+- Re-read the current hot cache, active provider selector, website exploration
+  skill, existing brand registration exploration, and the stale success test
+  design.
+- Probed the live `/brand/register` flow with the repo’s dev storage state and
+  confirmed the brand registration success path has changed.
+- Observed that step 2 no longer uses the old `อ่านเพิ่มเติม →` modal flow and
+  instead shows three inline policy cards: `Privacy Brand`, `Term & Con Brand`,
+  and `Agreement Brand`.
+- Confirmed the old backend validation blocker no longer reproduces and that
+  the page reaches `สมัครสำเร็จแล้ว!` on `/brand/register` after valid step-2
+  data plus the three visible policy acceptances.
+- Updated `src/test-design/exploration-brand-register-flow.md` to reflect the
+  current success-path behavior at 98% confidence.
+- Closed `INC-002` in `.agents/review-notes/incident-log.md` and moved it to
+  the resolution log with a passing retest note.
+
+Result:
+
+- The brand registration success flow is now re-explored with high confidence
+  and is ready to drive a refreshed success test design and implementation.
+
+Validation:
+
+- `npx prettier --check src/test-design/exploration-brand-register-flow.md .agents/review-notes/incident-log.md` passed after formatting.
+
+Token usage:
+
+- Total: Not available in this interface
+- Input: Not available in this interface
+- Output: Not available in this interface
+
+Reasoning summary:
+
+- The low-confidence success design was caused by stale exploration, so the
+  right move was to re-probe the live brand flow first and update the
+  exploration/incident evidence before attempting more implementation.
+
+## 2026-04-26 00:24:41 +0700
+
+Prompt summary:
+
+- Explore the creator registration success flow.
+
+Skills/tools used:
+
+- `agent-workflow-orchestrator`
+- `website-exploration-flow`
+- Local repository inspection with `sed`, `rg`, and `ls`
+- Live Playwright probing with local `node` scripts
+- Local file editing with `apply_patch`
+
+Actions:
+
+- Re-read the hot cache, active provider selector, website exploration skill,
+  and the current creator registration exploration.
+- Probed the live `/register` flow through successful completion using the
+  repo’s dev storage state and timestamped test data.
+- Confirmed the creator flow now reaches a visible success state on
+  `/register` with `สมัครเรียบร้อยแล้ว!` and a `ไปยัง Dashboard` CTA.
+- Confirmed the success CTA redirects unauthenticated users to
+  `/login?next=%2Fcreator%2Fdashboard`.
+- Updated `src/test-design/exploration-creator-register-flow.md` to include the
+  observed success state and raised the exploration confidence to 98%.
+
+Result:
+
+- The creator registration flow now has high-confidence exploration coverage for
+  the full `Account -> Social -> Personal -> Success` journey.
+
+Validation:
+
+- `npx prettier --write src/test-design/exploration-creator-register-flow.md` passed.
+
+Token usage:
+
+- Total: Not available in this interface
+- Input: Not available in this interface
+- Output: Not available in this interface
+
+Reasoning summary:
+
+- The old creator exploration stopped short of submission, so the only way to
+  raise confidence above the project threshold was to execute the live success
+  path and capture the actual success-state and CTA behavior directly.
+
+## 2026-04-26 00:27:59 +0700
+
+Prompt summary:
+
+- Start implementing the creator register success flow.
+
+Skills/tools used:
+
+- `agent-workflow-orchestrator`
+- `playwright-skill`
+- Local repository inspection with `sed`, `rg`, and `ls`
+- Local file editing with `apply_patch`
+- Targeted Playwright execution with `npx playwright test`
+
+Actions:
+
+- Reused the refreshed creator success-flow exploration and current creator
+  register page object as implementation input.
+- Extended `src/test-data/register-test-data.ts` with creator success-path
+  helpers and a password-reference constant.
+- Extended `src/page/creator-register-page.ts` with personal-profile fill and
+  success-state assertions.
+- Updated `src/util-services/register-success-account-log.service.ts` so new
+  successful accounts are inserted at the top of the feature-local registry and
+  replace the placeholder row on first success.
+- Added `src/test/web-ui/creator-register-flow/register-success.spec.ts` to
+  implement `REG-VAL-001` for the live creator success flow, including the
+  success-state Dashboard CTA redirect assertion and account-log write.
+
+Result:
+
+- Creator success-path implementation now exists and passed against the live
+  site.
+
+Validation:
+
+- `npx prettier --check src/test/web-ui/creator-register-flow/register-success.spec.ts src/page/creator-register-page.ts src/test-data/register-test-data.ts src/util-services/register-success-account-log.service.ts` passed.
+- `npm run lint -- src/test/web-ui/creator-register-flow/register-success.spec.ts src/page/creator-register-page.ts src/test-data/register-test-data.ts src/util-services/register-success-account-log.service.ts` passed.
+- `npx playwright test --project=web-ui-unauthenticated src/test/web-ui/creator-register-flow/register-success.spec.ts` passed with `1 passed`.
+
+Token usage:
+
+- Total: Not available in this interface
+- Input: Not available in this interface
+- Output: Not available in this interface
+
+Reasoning summary:
+
+- The creator success behavior was already live-verified, so the pragmatic move
+  was to implement a dedicated success spec on top of the existing creator page
+  object rather than overload the validation-focused `register-flow.spec.ts`.

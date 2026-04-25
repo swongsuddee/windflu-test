@@ -1,41 +1,44 @@
 # Windflu Brand Registration Exploration
 
-Exploration date: 2026-04-25
+Exploration date: 2026-04-26
 
-Scope: unauthenticated public brand registration at `/brand/register`.
+Scope: unauthenticated public brand registration at `/brand/register`,
+including the current success completion behavior.
 
-Confidence level: 90%
+Confidence level: 98%
 
 ## Exploration Summary
 
-- Brand registration is a multi-step public flow that stays on
+- Brand registration remains a public 2-step flow that stays on
   `/brand/register`.
-- Step 1 is account information entry.
-- Step 2 is brand information entry plus visible policy acceptance.
-- The currently exposed visible acceptance path is still blocked by incident
-  `INC-002`, so successful completion remains a product issue rather than a
-  missing exploration gap.
+- Step 1 is still account information entry.
+- Step 2 has changed from the previously observed modal-based policy flow to an
+  inline policy-and-agreement section.
+- The previous `INC-002` blocker no longer reproduced in today’s retest.
+- Current live behavior shows successful completion on the same route after the
+  three visible policy acceptances are completed with valid step-2 data.
 
 ## Module Inventory
 
-| Step | Visible Modules / Controls                                                                          | Notes                                         |
-| ---- | --------------------------------------------------------------------------------------------------- | --------------------------------------------- |
-| 1    | `ข้อมูลบัญชี`, contact name, email, password, confirm password, phone, `ถัดไป`                      | Mismatched passwords should block progression |
-| 2    | `ข้อมูลแบรนด์`, company/brand name, industry combobox, `อ่านเพิ่มเติม →`, `ย้อนกลับ`, `สมัครสมาชิก` | Step 2 remains on `/brand/register`           |
+| Step / State | Visible Modules / Controls                                                                                                                                             | Notes                                                                          |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| Step 1       | `ข้อมูลบัญชี`, contact name, company email, password, confirm password, phone, `ถัดไป`                                                                                 | Step title shown as `Brand Portal · ขั้นตอน 1/2`                               |
+| Step 2       | `ข้อมูลแบรนด์`, company/brand name input, industry combobox, 3 inline policy cards (`Privacy Brand`, `Term & Con Brand`, `Agreement Brand`), `ย้อนกลับ`, `สมัครสมาชิก` | Step title shown as `Brand Portal · ขั้นตอน 2/2`                               |
+| Success      | `สมัครสำเร็จแล้ว!`, welcome message, `เข้าสู่ระบบ`                                                                                                                     | Success state remains on `/brand/register`; submit button is no longer visible |
 
 ## Transition Flow
 
-| Source                | Trigger / Condition                           | Destination / Result         | Notes                                        |
-| --------------------- | --------------------------------------------- | ---------------------------- | -------------------------------------------- |
-| `/brand/login`        | Click `สมัครฟรี`                              | `/brand/register`            | Public brand registration entry              |
-| Brand register step 1 | Click `ถัดไป` with empty/invalid data         | Remains on step 1            | Validation/progression block                 |
-| Brand register step 1 | Click `ถัดไป` with mismatched passwords       | Remains on step 1            | Confirm-password validation                  |
-| Brand register step 1 | Click `ถัดไป` with valid account data         | Step 2 visible               | Heading changes to `ข้อมูลแบรนด์`            |
-| Brand register step 2 | Fill company name and choose industry         | Step 2 remains active        | Required visible fields                      |
-| Brand register step 2 | Click `อ่านเพิ่มเติม →`                       | Policy modal/dialog opens    | Visible acceptance path                      |
-| Brand register step 2 | Click `ยอมรับข้อตกลงนี้`                      | Returns to step 2            | Visible policy acceptance completes          |
-| Brand register step 2 | Click `สมัครสมาชิก` with visible fields valid | Registration should complete | Live behavior currently blocked by `INC-002` |
-| Brand register step 2 | Click `ย้อนกลับ`                              | Step 1 visible               | Back navigation within same route            |
+| Source                | Trigger / Condition                                         | Destination / Result               | Notes                                                                                                    |
+| --------------------- | ----------------------------------------------------------- | ---------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `/brand/login`        | Click `สมัครฟรี`                                            | `/brand/register`                  | Public brand registration entry                                                                          |
+| Brand register step 1 | Click `ถัดไป` with empty/invalid data                       | Remains on step 1                  | Account-step validation still applies                                                                    |
+| Brand register step 1 | Click `ถัดไป` with valid account data                       | Step 2 visible                     | `ข้อมูลแบรนด์` and `Brand Portal · ขั้นตอน 2/2` are shown                                                |
+| Brand register step 2 | Fill company name and choose an industry                    | Step 2 remains active              | `สมัครสมาชิก` is still disabled while required policies remain unaccepted                                |
+| Brand register step 2 | Accept `Privacy Brand`                                      | Step 2 remains active              | One inline policy acceptance toggled                                                                     |
+| Brand register step 2 | Accept `Term & Con Brand`                                   | Step 2 remains active              | Second inline policy acceptance toggled                                                                  |
+| Brand register step 2 | Accept `Agreement Brand` after valid visible data is filled | Success state on `/brand/register` | Success appeared immediately after the third visible acceptance in today’s retest                        |
+| Brand register step 2 | Click `ย้อนกลับ`                                            | Step 1 visible                     | Back navigation remains available before completion                                                      |
+| Success state         | Click `เข้าสู่ระบบ`                                         | Brand login entry                  | CTA is visible; route target was not re-opened because success confirmation was the exploration priority |
 
 ## Mermaid Flow Diagram
 
@@ -43,28 +46,27 @@ Confidence level: 90%
 flowchart TD
     BrandLogin["Brand Login /brand/login"] -->|สมัครฟรี| Step1["Brand Register Step 1 /brand/register"]
     Step1 -->|Empty or invalid data| Step1
-    Step1 -->|Password mismatch| Step1
     Step1 -->|Valid account data + ถัดไป| Step2["Brand Register Step 2 /brand/register"]
     Step2 -->|ย้อนกลับ| Step1
-    Step2 -->|Open อ่านเพิ่มเติม| PolicyModal["Visible policy modal"]
-    PolicyModal -->|ยอมรับข้อตกลงนี้| Step2
-    Step2 -->|สมัครสมาชิก| RegisterResult["Expected success or current blocker"]
+    Step2 -->|Fill company + industry| Step2
+    Step2 -->|Accept Privacy Brand| Step2
+    Step2 -->|Accept Term & Con Brand| Step2
+    Step2 -->|Accept Agreement Brand| Success["Success state on /brand/register"]
+    Success -->|เข้าสู่ระบบ| BrandLoginEntry["Brand login entry"]
 ```
 
 ## QA Notes
 
-- Step 2 fields currently confirmed in implementation and design:
-  company/brand name, industry selection, and visible policy acceptance.
-- Current blocker evidence from live runs:
-  `accept_privacy_policy_version, accept_terms_and_conditions_version, and accept_clipper_agreement_version are required`.
-- Repeated retries later returned `too many requests`.
-
-## Clarification Points
-
-- Is there a hidden policy/version field expected by the backend that the UI
-  does not currently expose?
-- Should the visible policy modal cover privacy, terms, and clipper agreement
-  separately instead of a single exposed acceptance action?
+- The old `อ่านเพิ่มเติม →` modal interaction is no longer part of the live
+  step-2 brand flow.
+- The live policy section now exposes three separate visible agreement cards
+  with version tags (`V1.0.0`) and acceptance text for each card.
+- The old backend validation error
+  `accept_privacy_policy_version, accept_terms_and_conditions_version, and accept_clipper_agreement_version are required`
+  was not reproduced in today’s retest.
+- The success transition happened before any manual `สมัครสมาชิก` click could be
+  re-applied, which suggests the final visible policy acceptance now triggers
+  completion once the required visible fields are already valid.
 
 ## Test Design Handoff
 
@@ -72,5 +74,6 @@ Ready for test design / implementation:
 
 - Step-1 validation coverage
 - Step-1 to step-2 progression coverage
-- Step-2 visible-field coverage
-- Expected-failure success-path coverage until `INC-002` is resolved
+- Step-2 inline policy-card coverage
+- Positive success-path coverage for valid brand registration
+- Success-state CTA coverage for the visible `เข้าสู่ระบบ` action

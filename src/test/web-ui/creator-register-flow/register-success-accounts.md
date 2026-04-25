@@ -17,6 +17,7 @@ this file.
 
 ## Success Registry
 
-| Created At       | Flow                      | Display Name / Contact Name | Email                                 | Role  | Status | Password Reference | Notes                                      |
-| ---------------- | ------------------------- | --------------------------- | ------------------------------------- | ----- | ------ | ------------------ | ------------------------------------------ |
-| _No entries yet_ | Brand register valid flow | `jojoetestYYYYMMDDHHMMSS`   | `jojoetestYYYYMMDDHHMMSS@example.com` | Brand | _TBD_  | `_reference only_` | Add real rows only after a successful run. |
+| Created At          | Flow        | Display Name / Contact Name | Email                                 | Role    | Status  | Password Reference                                           | Notes                                                                                                |
+| ------------------- | ----------- | --------------------------- | ------------------------------------- | ------- | ------- | ------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------- |
+| 2026-04-25 17:27:52 | REG-VAL-001 | `jojoedisplay172747`        | `jojoetest20260425172747@example.com` | Creator | Created | `src/test-data/register-test-data.ts` default valid password | Recorded from REG-VAL-001 valid creator registration reaches success state and exposes dashboard CTA |
+| 2026-04-25 17:30:09 | REG-VAL-001 | `jojoedisplay173003` | `jojoetest20260425173003@example.com` | Creator | Created | `src/test-data/register-test-data.ts` default valid password | Recorded from REG-VAL-001 valid creator registration reaches success state and exposes dashboard CTA |
