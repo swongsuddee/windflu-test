@@ -17,7 +17,7 @@ async function expectAuthenticated(page: Page, loginPath: string) {
     .waitForURL((url) => url.pathname !== loginPath, {
       timeout: 10_000,
     })
-    .catch(() => {});
+    .catch(() => { });
 
   if (new URL(page.url()).pathname === loginPath) {
     throw new Error(`Authentication did not leave ${loginPath}; check the configured credentials.`);
@@ -48,7 +48,7 @@ async function saveCreatorStorageState(page: Page, baseURL: string, storageState
   return 'created' satisfies AuthSetupResult;
 }
 
-setup('create authenticated storage states from dev base state', async ({ browser, baseURL }) => {
+setup('create creator authenticated storage states from dev base state', async ({ browser, baseURL }) => {
   const resolvedBaseURL = baseURL ?? 'https://www.windflu.com';
 
   const creatorContext = await browser.newContext({ storageState: devStorageStatePath });

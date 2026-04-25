@@ -6,7 +6,7 @@ import {
   createValidBrandProfileData,
   createValidBrandRegisterAccountData,
 } from '../../../test-data/register-test-data';
-import { appendRegisterSuccessAccount } from '../services/register-success-account-log-service';
+import { appendRegisterSuccessAccount } from '../util-services/register-success-account-log-service';
 
 test.describe('brand registration unauthenticated flow', () => {
   test('PUB-015 brand registration step 1 blocks incomplete or mismatched data', async ({

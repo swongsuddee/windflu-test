@@ -1,7 +1,7 @@
 import { test } from '@playwright/test';
 import { AuthenticatedDashboardPage } from '../../../page/authenticated-dashboard-page';
-import { installCommonBrowserApiMocks } from '../services/browser-api-mock-service';
-import { resolveAuthStorageState } from '../services/auth-storage-state-service';
+import { installCommonBrowserApiMocks } from '../util-services/browser-api-mock-service';
+import { resolveAuthStorageState } from '../util-services/auth-storage-state-service';
 
 const creatorStorageState = resolveAuthStorageState('creator');
 

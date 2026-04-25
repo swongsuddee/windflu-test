@@ -46,15 +46,7 @@ export default defineConfig({
     trace: 'on-first-retry',
   },
   projects: [
-    {
-      name: 'global-setup',
-      testDir: './src/test/web-ui/',
-      testMatch: '*.setup.ts',
-      use: {
-        ...desktopChrome,
-        storageState: devStorageStatePath,
-      },
-    },
+    //#region web-ui-unauthenticated
     {
       name: 'web-ui-unauthenticated',
       testDir: './src/test/web-ui',
@@ -65,16 +57,30 @@ export default defineConfig({
         storageState: devStorageStatePath,
       },
     },
+    //#endregion
+
+    //#region web-ui-creator-authenticated
     {
-      name: 'web-ui-authenticated',
-      testDir: './src/test/web-ui',
-      testMatch: ['**/authenticated-user/**/*.spec.ts'],
+      name: 'creator-global-setup',
+      testDir: './src/test/web-ui/',
+      testMatch: 'creator-*.setup.ts',
       use: {
         ...desktopChrome,
         storageState: devStorageStatePath,
       },
-      dependencies: ['global-setup'],
     },
+    {
+      name: 'creator-web-ui-authenticated',
+      testDir: './src/test/web-ui',
+      testMatch: ['**/authenticated-user/**/creator-*.spec.ts'],
+      use: {
+        ...desktopChrome,
+        storageState: devStorageStatePath,
+      },
+      dependencies: ['creator-global-setup'],
+    },
+    //#endregion
+
     {
       name: 'api',
       testDir: './src/test/api',
