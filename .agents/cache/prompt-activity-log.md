@@ -2821,3 +2821,75 @@ Reasoning summary:
 - The naming-policy task was a repository consistency cleanup, so the right
   scope was to rename the remaining legacy files and update only the live
   references rather than rewriting historical log entries.
+
+## 2026-04-26 01:11:13 +07
+
+Prompt summary:
+
+- Rename the current brand-specific `login-flow` area, add brand login global
+  setup, and create creator login test design plus implementation.
+
+Skills/tools used:
+
+- `agent-workflow-orchestrator`
+- `test-design-zephyr`
+- `playwright-skill`
+- `functions.exec_command`
+- `functions.apply_patch`
+- `multi_tool_use.parallel`
+
+Actions taken:
+
+- Probed the live creator login and creator forgot-password pages with
+  Playwright to confirm the current public flow before designing the new
+  creator suite.
+- Renamed `src/test/web-ui/login-flow/` to
+  `src/test/web-ui/brand-login-flow/` and renamed the colocated files to
+  `brand-login-flow.spec.ts` and `brand-login-flow.design.md`.
+- Added `src/test/web-ui/creator-login-flow/creator-login-flow.design.md` and
+  `src/test/web-ui/creator-login-flow/creator-login-flow.spec.ts` for the live
+  creator login and forgot-password flow (`PUB-039` to `PUB-042`).
+- Extended `src/page/creator-login-page.ts` with explicit initial-entry and
+  email-form assertions, and generalized `src/page/forgot-password-page.ts`
+  so it can cover both brand and creator routes.
+- Added brand credential support in `src/test-data/login-test-data.ts`.
+- Added `playwright/.auth/brand-storage.json` support in
+  `playwright/auth-storage.ts`, `.gitignore`, and
+  `src/util-services/auth-storage-state.service.ts`.
+- Created `src/util-services/auth-login-setup.service.ts` to share login setup
+  state-writing logic between creator and brand.
+- Added `src/test/web-ui/brand-login.setup.ts` and updated
+  `src/test/web-ui/creator-login.setup.ts` to use the shared setup service.
+- Updated `playwright.config.ts` with a `brand-global-setup` project and fixed
+  the creator authenticated project match pattern.
+- Updated active docs that still referenced the old `src/test/web-ui/login.setup.ts`
+  name.
+- Updated `.agents/cache/hot-cache.md`.
+
+Result:
+
+- Brand and creator login coverage are now split into explicit feature folders,
+  brand authenticated storage setup exists, and creator login has a dedicated
+  design plus passing implementation.
+
+Validation:
+
+- `npm run lint -- playwright.config.ts src/page/creator-login-page.ts src/page/forgot-password-page.ts src/test-data/login-test-data.ts src/test/web-ui/brand-login.setup.ts src/test/web-ui/creator-login.setup.ts src/test/web-ui/brand-login-flow/brand-login-flow.spec.ts src/test/web-ui/creator-login-flow/creator-login-flow.spec.ts src/util-services/auth-login-setup.service.ts src/util-services/auth-storage-state.service.ts` passed.
+- `npx prettier --check playwright.config.ts playwright/auth-storage.ts src/page/creator-login-page.ts src/page/forgot-password-page.ts src/test-data/login-test-data.ts src/test/web-ui/brand-login.setup.ts src/test/web-ui/creator-login.setup.ts src/test/web-ui/brand-login-flow/brand-login-flow.design.md src/test/web-ui/brand-login-flow/brand-login-flow.spec.ts src/test/web-ui/creator-login-flow/creator-login-flow.design.md src/test/web-ui/creator-login-flow/creator-login-flow.spec.ts src/util-services/auth-login-setup.service.ts src/util-services/auth-storage-state.service.ts src/test-design/exploration-authenticated-user-actions.md src/test/web-ui/creator-authenticated-user/authenticated-user.design.md` passed.
+- `npx playwright test --project=web-ui-unauthenticated src/test/web-ui/brand-login-flow/brand-login-flow.spec.ts` passed with `4 passed`.
+- `npx playwright test --project=web-ui-unauthenticated src/test/web-ui/creator-login-flow/creator-login-flow.spec.ts` passed with `4 passed`.
+- `npx playwright test --project=brand-global-setup src/test/web-ui/brand-login.setup.ts` passed with `1 passed`.
+- `npx playwright test --project=creator-global-setup src/test/web-ui/creator-login.setup.ts` passed with `1 passed`.
+
+Token usage:
+
+- Total: Not available in this interface
+- Input: Not available in this interface
+- Output: Not available in this interface
+
+Reasoning summary:
+
+- The current `login-flow` area was already brand-specific, so the clean fix
+  was to rename that feature explicitly and add a parallel creator login flow
+  based on a fresh live probe rather than trying to force both roles into one
+  mixed folder.

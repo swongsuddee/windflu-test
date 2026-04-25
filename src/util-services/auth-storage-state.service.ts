@@ -1,9 +1,13 @@
 import { existsSync } from 'fs';
-import { creatorStorageStatePath } from '../../../../playwright/auth-storage';
+import {
+  brandStorageStatePath,
+  creatorStorageStatePath,
+} from '../../../../playwright/auth-storage';
 
-type AuthRole = 'creator';
+type AuthRole = 'brand' | 'creator';
 
 const authStorageStateByRole = {
+  brand: brandStorageStatePath,
   creator: creatorStorageStatePath,
 } as const satisfies Record<AuthRole, string>;
 

@@ -1,8 +1,8 @@
-# Login Flow Test Design
+# Brand Login Flow Test Design
 
 Source: split from the legacy public unauthenticated master reference
 
-Implementation: `src/test/web-ui/login-flow/login-flow.spec.ts`
+Implementation: `src/test/web-ui/brand-login-flow/brand-login-flow.spec.ts`
 
 Scope: brand login and forgot-password flow for unauthenticated users.
 

@@ -3,4 +3,5 @@ playwright-report/
 test-results/
 .env
 playwright/.auth/creator-storage.json
+playwright/.auth/brand-storage.json
 src/test-data/register-success-accounts.md

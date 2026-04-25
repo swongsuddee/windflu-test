@@ -41,7 +41,7 @@ test.describe('login and recovery unauthenticated flow', () => {
   test('PUB-016 forgot-password enables submit only after email input', async ({ page }) => {
     const forgotPasswordPage = new ForgotPasswordPage(page);
 
-    await forgotPasswordPage.gotoForgotPassword();
+    await forgotPasswordPage.gotoForgotPassword('/brand/forgot-password');
 
     await expect(forgotPasswordPage.submitButton).toBeDisabled();
     await forgotPasswordPage.emailInput.fill(brandLoginTestData.invalidEmail);

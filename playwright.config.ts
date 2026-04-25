@@ -63,6 +63,15 @@ export default defineConfig({
 
     //#region web-ui-creator-authenticated
     {
+      name: 'brand-global-setup',
+      testDir: './src/test/web-ui/',
+      testMatch: 'brand-*.setup.ts',
+      use: {
+        ...desktopChrome,
+        storageState: devStorageStatePath,
+      },
+    },
+    {
       name: 'creator-global-setup',
       testDir: './src/test/web-ui/',
       testMatch: 'creator-*.setup.ts',
@@ -74,7 +83,7 @@ export default defineConfig({
     {
       name: 'creator-web-ui-authenticated',
       testDir: './src/test/web-ui',
-      testMatch: ['**/authenticated-user/**/creator-*.spec.ts'],
+      testMatch: ['**/creator-authenticated-user/**/*.spec.ts'],
       use: {
         ...desktopChrome,
         storageState: devStorageStatePath,

@@ -23,6 +23,7 @@ Playwright test project for Windflu web UI and API coverage against
 
 ## Recent Changes
 
+- 2026-04-26: Split the old `login-flow` area into `brand-login-flow` and `creator-login-flow`, added a brand login setup project plus shared auth setup service, and validated both login suites and both setup projects against the live site.
 - 2026-04-26: Applied the remaining naming-policy cleanup by renaming legacy `-service.ts` files to `.service.ts` and legacy `-test-design.md` files to `.design.md`, then updated the active code references.
 - 2026-04-26: Switched registration success logging to per-run random passwords, made `src/test-data/register-success-accounts.md` a gitignored local registry, and taught the log service to bootstrap that file automatically.
 - 2026-04-26: Revalidated creator and brand registration success specs after the password-logging change; both targeted Playwright runs passed against the live site.
@@ -32,7 +33,6 @@ Playwright test project for Windflu web UI and API coverage against
 - 2026-04-26: Fixed the editor `process` type error in `playwright.config.ts` by adding an explicit Node types reference at the top of the file; file-scoped Prettier validation passed.
 - 2026-04-26: Re-explored the public legal policy pages, closed `INC-003`, and confirmed stable long-form privacy and terms content with visible tabs and update stamps dated `25 เมษายน 2569`.
 - 2026-04-26: Implemented `REG-VAL-001` for the creator success path with `src/test/web-ui/creator-register-flow/register-success.spec.ts`, extended creator register helpers, improved success-account log insertion, and verified the live run with `1 passed`.
-- 2026-04-26: Re-explored the creator registration success flow, raised `src/test-design/exploration-creator-register-flow.md` to 98% confidence, and confirmed the live success state on `/register` plus the post-success redirect CTA to `/login?next=%2Fcreator%2Fdashboard`.
 
 ## Active Assumptions
 
@@ -47,7 +47,7 @@ Validation status (2026-04-26):
 
 - lint: pass
 - format: pass
-- tests: partial — last known creator register suites passed (`7 passed`, `1 passed`) and brand register success passed (`1 passed`); not rerun after naming-only cleanup
+- tests: pass — creator register suites passed (`7 passed`, `1 passed`), brand register success passed (`1 passed`), brand/creator login suites passed (`4 passed` each), and both login setup projects passed (`1 passed` each)
 
 ## Known Caveats
 
@@ -67,4 +67,5 @@ Validation status (2026-04-26):
 
 Refresh the legal-policy design/spec and the remaining stale creator
 success-path design file so they match the current explorations and
-implementations.
+implementations, then add authenticated brand coverage now that reusable brand
+storage setup exists.

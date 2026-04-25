@@ -13,7 +13,7 @@ Confidence level: 84%
 ## Assumptions
 
 - Creator tests use `creatorStorageStatePath` from `playwright/auth-storage.ts`.
-- `src/test/web-ui/login.setup.ts` has already generated the required storage
+- `src/test/web-ui/creator-login.setup.ts` has already generated the required storage
   state by using `WINDFLU_CREATOR_EMAIL` / `WINDFLU_CREATOR_PASSWORD`.
 - Authenticated tests should not store credentials, cookies, OTPs, or generated
   storage state files in Git.
