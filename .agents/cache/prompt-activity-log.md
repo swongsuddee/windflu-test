@@ -2774,3 +2774,50 @@ Reasoning summary:
 - The worktree contained both the new password-logging change and earlier
   uncommitted brand success work, so the right approach was to validate the
   combined registration surface and ship one coherent registration commit.
+
+## 2026-04-26 01:02:00 +07
+
+Prompt summary:
+
+- Apply the repository naming policy for `.service` and `.design`.
+
+Skills/tools used:
+
+- `agent-workflow-orchestrator`
+- `functions.exec_command`
+- `functions.apply_patch`
+- `multi_tool_use.parallel`
+
+Actions taken:
+
+- Renamed remaining legacy service files from `*-service.ts` to `.service.ts`:
+  `browser-api-mock.service.ts` and `auth-storage-state.service.ts`.
+- Renamed remaining legacy test design files from `*-test-design.md` to
+  `.design.md` across the web UI feature folders.
+- Updated the authenticated-user spec imports to the new service filenames.
+- Updated `.agents/cache/hot-cache.md` to reflect the new naming baseline.
+- Verified there are no active repo references to the old naming patterns
+  outside historical prompt-log entries.
+
+Result:
+
+- The active codebase now follows the `.service.ts` and `.design.md` naming
+  policy for the previously remaining legacy files.
+
+Validation:
+
+- `rg -n "browser-api-mock-service|auth-storage-state-service|legal-policy-test-design|login-flow-test-design|creator-campaigns-test-design|homepage-unauthenticated-test-design|register-success-test-design|homepage-brand-lead-test-design|authenticated-user-test-design|campaign-detail-test-design" src .agents/cache/hot-cache.md playwright.config.ts -g '!node_modules'` returned no active matches.
+- `npx prettier --check .agents/cache/hot-cache.md src/test/web-ui/creator-authenticated-user/authenticated-user.spec.ts` passed.
+- `npm run lint -- src/test/web-ui/creator-authenticated-user/authenticated-user.spec.ts` passed.
+
+Token usage:
+
+- Total: Not available in this interface
+- Input: Not available in this interface
+- Output: Not available in this interface
+
+Reasoning summary:
+
+- The naming-policy task was a repository consistency cleanup, so the right
+  scope was to rename the remaining legacy files and update only the live
+  references rather than rewriting historical log entries.
