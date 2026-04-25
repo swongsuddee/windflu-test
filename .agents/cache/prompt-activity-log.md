@@ -72,8 +72,10 @@ Actions:
 
 Result:
 
-- The current worktree is validated for lint and formatting and is ready to be
-  staged, committed, and pushed as one intentional project-wide change set.
+- Created commit `aa9fc83`
+  `chore(project): migrate tests to src and vendor agent skills`.
+- A small follow-up commit is still needed for the remaining
+  `playwright.config.ts` change before push.
 
 Validation:
 
@@ -81,6 +83,10 @@ Validation:
 - `npm run format` passed after elevated file-permission access was used for
   vendored `.agents/skills/*` files.
 - `npm run format:check` passed.
+- `npm run lint` passed again after identifying the remaining
+  `playwright.config.ts` diff.
+- `npm run format:check` passed again after identifying the remaining
+  `playwright.config.ts` diff.
 - Playwright tests not run in this commit-prep task.
 
 Token usage:

@@ -77,6 +77,9 @@ Authenticated dashboard coverage is implemented for:
 
 ## Recent Changes
 
+- 2026-04-25: Created commit `aa9fc83`
+  `chore(project): migrate tests to src and vendor agent skills`; one follow-up
+  commit remains for `playwright.config.ts` before push.
 - 2026-04-25: Reviewed the full repo diff, ran `npm run lint` and
   `npm run format:check`, and prepared the current project-wide restructure and
   agent-config changes for commit/push on `main`.
@@ -275,6 +278,9 @@ Authenticated dashboard coverage is implemented for:
 
 ## Validation Status
 
+- `npm run lint` passed again on 2026-04-25 before the follow-up config commit.
+- `npm run format:check` passed again on 2026-04-25 before the follow-up
+  config commit.
 - `npm run lint` passed on 2026-04-25.
 - `npm run format` passed on 2026-04-25 after escalating file permissions for
   vendored `.agents/skills/*` files.
