@@ -86,6 +86,10 @@ Authenticated dashboard coverage is implemented for:
 
 ## Recent Changes
 
+- 2026-04-25: Fixed the local Node 18 install warning by aligning the lint
+  toolchain to Node 18-compatible versions: pinned `typescript-eslint` to
+  `8.44.1` and downgraded `typescript` to `5.9.3`, then refreshed
+  `package-lock.json`.
 - 2026-04-25: Split homepage unauthenticated navigation coverage into
   single-purpose cases so each case validates one outcome only:
   `PUB-002` brand link, `PUB-030` campaigns link, and `PUB-031` logo-home
@@ -322,6 +326,13 @@ Authenticated dashboard coverage is implemented for:
 
 ## Validation Status
 
+- `npm install` passed on 2026-04-25 after pinning Node 18-compatible
+  TypeScript lint dependencies.
+- `npm i --save-dev @types/node` passed on 2026-04-25 without the prior
+  `EBADENGINE` warning.
+- `npm run lint` passed on 2026-04-25 after the dependency alignment update.
+- `npm run format:check` passed on 2026-04-25 after the dependency alignment
+  update.
 - `npx playwright test --project=web-ui-unauthenticated src/test/web-ui/homepage-unauthenticated/homepage-unauthenticated.spec.ts`
   passed on 2026-04-25 with `6 passed` after splitting homepage navigation into
   single-purpose cases.

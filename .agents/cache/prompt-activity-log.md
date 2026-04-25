@@ -1984,3 +1984,53 @@ Reasoning summary:
 - Splitting the combined navigation case was cleaner than keeping multiple
   route assertions under one ID, and it keeps the implementation aligned with
   the test-design intent the user asked for.
+
+## 2026-04-25 - Fix Node 18 EBADENGINE Warning
+
+Prompt summary:
+
+- User reported an `npm i --save-dev @types/node` `EBADENGINE` warning caused
+  by the current Node 18 environment.
+
+Skills/tools used:
+
+- `agent-workflow-orchestrator`
+- Local package inspection with `npm ls`, `npm view`, and file reads
+- Dependency updates through `apply_patch` and `npm install`
+
+Actions:
+
+- Traced the warning to `typescript-eslint@8.59.0` pulling
+  `eslint-visitor-keys@5.0.1`, which requires Node 20+.
+- Queried npm metadata to find a Node 18-compatible `typescript-eslint`
+  release.
+- Pinned `typescript-eslint` to `8.44.1`, which depends on
+  `eslint-visitor-keys@^4.2.1`.
+- Downgraded `typescript` from `6.0.3` to `5.9.3` to satisfy the matching peer
+  range and refreshed `package-lock.json`.
+- Re-ran the exact `npm i --save-dev @types/node` command to confirm the engine
+  warning was gone.
+
+Result:
+
+- The repo now installs cleanly on Node `18.20.8` without the reported
+  `EBADENGINE` warning from `eslint-visitor-keys@5.0.1`.
+
+Validation:
+
+- `npm install` passed.
+- `npm i --save-dev @types/node` passed without the prior warning.
+- `npm run lint` passed.
+- `npm run format:check` passed.
+
+Token usage:
+
+- Total: Not available in this interface
+- Input: Not available in this interface
+- Output: Not available in this interface
+
+Reasoning summary:
+
+- The cleanest fix was to align the TypeScript lint stack to a Node 18-friendly
+  release line instead of only documenting a higher Node requirement, because
+  the user explicitly wanted the warning removed on the current environment.
