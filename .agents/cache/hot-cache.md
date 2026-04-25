@@ -23,6 +23,7 @@ Playwright test project for Windflu web UI and API coverage against
 
 ## Recent Changes
 
+- 2026-04-26: Re-explored the public legal policy pages, closed `INC-003`, and confirmed stable long-form privacy and terms content with visible tabs and update stamps dated `25 เมษายน 2569`.
 - 2026-04-26: Implemented `REG-VAL-001` for the creator success path with `src/test/web-ui/creator-register-flow/register-success.spec.ts`, extended creator register helpers, improved success-account log insertion, and verified the live run with `1 passed`.
 - 2026-04-26: Re-explored the creator registration success flow, raised `src/test-design/exploration-creator-register-flow.md` to 98% confidence, and confirmed the live success state on `/register` plus the post-success redirect CTA to `/login?next=%2Fcreator%2Fdashboard`.
 - 2026-04-26: Re-explored the brand registration success flow, raised `src/test-design/exploration-brand-register-flow.md` to 98% confidence, and closed `INC-002` after retest confirmed the new inline policy-card success path on `/brand/register`.
@@ -38,8 +39,6 @@ Playwright test project for Windflu web UI and API coverage against
 
 - Public creator registration remains reachable at `/register` from the guest
   experience.
-- Policy pages should be asserted conservatively by navigation and visible
-  public content until the user confirms the legal content is fully ready.
 - Unauthenticated public coverage should continue following the current live
   guest contract, including redirects for creator-session-only routes.
 
@@ -56,11 +55,13 @@ Validation status (2026-04-26):
 - Creator and brand success-path test-design files are still stale relative to
   the refreshed 2026-04-26 success-flow explorations, even though creator
   success implementation now exists.
+- The legal-policy test design and spec still reflect the earlier conservative
+  navigation-only scope even though `INC-003` is now closed.
 - Do not store raw passwords, auth tokens, cookies, OTPs, or personal data in
   repository docs, hot cache, or prompt logs.
 
 ## Next Useful Action
 
-Refresh the creator and brand success-path test-design files to match the
-2026-04-26 explorations, then implement the remaining brand success-path spec
-from the current inline policy-card behavior.
+Refresh the legal-policy design/spec and the success-path design files so they
+match the refreshed 2026-04-26 explorations before the next implementation
+pass.

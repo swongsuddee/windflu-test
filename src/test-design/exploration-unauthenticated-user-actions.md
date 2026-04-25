@@ -27,27 +27,27 @@ Confidence level: 96%
 
 ## Unauthenticated Journey Inventory
 
-| Journey                     | Entry Point              | Main User Actions                                                                | Current Observed Result                                                      |
-| --------------------------- | ------------------------ | -------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
-| Homepage browsing           | `/`                      | Read marketing content, inspect workflow, use nav, click footer links            | Public homepage is available                                                 |
-| Brand auth entry            | `/brand/login`           | Login attempt, switch to register, switch to forgot-password, switch to creator  | Public auth entry is available                                               |
-| Brand forgot-password entry | `/brand/forgot-password` | Enter email, verify submit enablement, return to login                           | Public recovery entry is available                                           |
-| Brand registration entry    | `/brand/register`        | Start registration flow                                                          | Detailed flow moved to dedicated file                                        |
-| Creator auth entry          | `/login`                 | Choose email login, use register link                                            | Public creator login entry is available                                      |
-| Creator registration entry  | `/register`              | Start creator registration flow                                                  | Detailed flow moved to dedicated file                                        |
-| Campaign browsing           | `/creator/campaigns`     | Accept cookie banner, search, filter, review empty state and support/login links | Campaign list is publicly accessible; current environment shows empty state  |
-| Legal / policy browsing     | `/policy?...`            | Open privacy tab, terms tab, navigate from footer and campaign-related links     | Public legal content is available, but content is still under implementation |
+| Journey                     | Entry Point              | Main User Actions                                                                | Current Observed Result                                                           |
+| --------------------------- | ------------------------ | -------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| Homepage browsing           | `/`                      | Read marketing content, inspect workflow, use nav, click footer links            | Public homepage is available                                                      |
+| Brand auth entry            | `/brand/login`           | Login attempt, switch to register, switch to forgot-password, switch to creator  | Public auth entry is available                                                    |
+| Brand forgot-password entry | `/brand/forgot-password` | Enter email, verify submit enablement, return to login                           | Public recovery entry is available                                                |
+| Brand registration entry    | `/brand/register`        | Start registration flow                                                          | Detailed flow moved to dedicated file                                             |
+| Creator auth entry          | `/login`                 | Choose email login, use register link                                            | Public creator login entry is available                                           |
+| Creator registration entry  | `/register`              | Start creator registration flow                                                  | Detailed flow moved to dedicated file                                             |
+| Campaign browsing           | `/creator/campaigns`     | Accept cookie banner, search, filter, review empty state and support/login links | Campaign list is publicly accessible; current environment shows empty state       |
+| Legal / policy browsing     | `/policy?...`            | Open privacy tab, terms tab, navigate from footer and campaign-related links     | Public legal content is available with stable long-form privacy and terms content |
 
 ## Page / Module Inventory
 
-| Area                  | Page / Route                                                     | Visible Modules                                                                                          | Notes                                                        |
-| --------------------- | ---------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
-| Homepage              | `/`                                                              | Header nav, hero CTAs, creator workflow, brand lead CTA, footer links                                    | Brand lead-form detail moved to dedicated exploration file   |
-| Brand Login           | `/brand/login`                                                   | Email, password, visibility toggle, login, register, forgot-password, creator login link                 | No authenticated dashboard explored                          |
-| Brand Forgot Password | `/brand/forgot-password`                                         | Email field, disabled reset submit until valid input, back-login link                                    | Reset email not submitted                                    |
-| Creator Login         | `/login`                                                         | Google login, email login, register link                                                                 | Email login sub-flow is available                            |
-| Campaign Listing      | `/creator/campaigns`                                             | Sidebar nav, cookie banner, search, platform filters, category filters, empty-state, support/login links | Sidebar protected links are visible to unauthenticated users |
-| Policy                | `/policy?tab=privacy_policy`, `/policy?tab=terms_and_conditions` | Privacy/terms tabs, long legal content, footer links                                                     | Campaign nav also links with `type=privacy_policy` variant   |
+| Area                  | Page / Route                                                     | Visible Modules                                                                                          | Notes                                                                      |
+| --------------------- | ---------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| Homepage              | `/`                                                              | Header nav, hero CTAs, creator workflow, brand lead CTA, footer links                                    | Brand lead-form detail moved to dedicated exploration file                 |
+| Brand Login           | `/brand/login`                                                   | Email, password, visibility toggle, login, register, forgot-password, creator login link                 | No authenticated dashboard explored                                        |
+| Brand Forgot Password | `/brand/forgot-password`                                         | Email field, disabled reset submit until valid input, back-login link                                    | Reset email not submitted                                                  |
+| Creator Login         | `/login`                                                         | Google login, email login, register link                                                                 | Email login sub-flow is available                                          |
+| Campaign Listing      | `/creator/campaigns`                                             | Sidebar nav, cookie banner, search, platform filters, category filters, empty-state, support/login links | Sidebar protected links are visible to unauthenticated users               |
+| Policy                | `/policy?tab=privacy_policy`, `/policy?tab=terms_and_conditions` | Privacy/terms tabs, long legal content, footer links                                                     | Current headings include `Privacy Policy Clipper` and `Terms & Conditions` |
 
 ## Transition Flow
 
@@ -101,8 +101,9 @@ flowchart TD
 
 - Public site behavior depends on `localStorage.isDev=true`; without it, the
   site can show a coming-soon page.
-- Terms and privacy content are still under implementation and should not be
-  treated as stable assertion targets yet.
+- Policy content now appears stable enough for deeper assertion coverage:
+  privacy shows `Privacy Policy Clipper` `V1.0.0` and terms shows
+  `Terms & Conditions` `V1.0.1`, both dated `25 เมษายน 2569`.
 - Campaign cookie actions are visible, but prior automation showed the banner
   does not reliably disappear after synthetic accept.
 - Current guest campaign listing is in empty state, so campaign-card assertions
@@ -140,7 +141,6 @@ Covered separately in dedicated exploration files:
 Blocked or assumption-based:
 
 - `/contact` until implementation completes
-- Terms and privacy content assertions until implementation stabilizes
 - Authenticated dashboards
 - Payout/finance behavior
 - Brand campaign creation/review flows

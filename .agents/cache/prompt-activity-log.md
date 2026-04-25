@@ -2429,3 +2429,53 @@ Reasoning summary:
 - The creator success behavior was already live-verified, so the pragmatic move
   was to implement a dedicated success spec on top of the existing creator page
   object rather than overload the validation-focused `register-flow.spec.ts`.
+
+## 2026-04-26 00:36:12 +0700
+
+Prompt summary:
+
+- Explore incident `INC-003` because the developers have updated the legal
+  policy content.
+
+Skills/tools used:
+
+- `agent-workflow-orchestrator`
+- `website-exploration-flow`
+- Local repository inspection with `sed`
+- Live Playwright probing with local `node` scripts
+- Local file editing with `apply_patch`
+
+Actions:
+
+- Re-read the incident log, current legal-policy coverage, and unauthenticated
+  exploration context.
+- Probed both `/policy?tab=privacy_policy` and
+  `/policy?tab=terms_and_conditions` using the repo’s dev storage state.
+- Confirmed stable long-form content on both tabs, concrete headings, version
+  markers, visible tabs, support contact details, and update stamps dated
+  `25 เมษายน 2569`.
+- Updated `.agents/review-notes/incident-log.md` to close `INC-003`.
+- Updated `src/test-design/exploration-unauthenticated-user-actions.md` so the
+  policy pages are no longer treated as implementation-only content.
+
+Result:
+
+- `INC-003` is now resolved and policy content is ready to support deeper
+  policy-specific test design and assertions.
+
+Validation:
+
+- `npx prettier --write src/test-design/exploration-unauthenticated-user-actions.md` passed.
+- `npx prettier --check .agents/review-notes/incident-log.md src/test-design/exploration-unauthenticated-user-actions.md` passed after formatting.
+
+Token usage:
+
+- Total: Not available in this interface
+- Input: Not available in this interface
+- Output: Not available in this interface
+
+Reasoning summary:
+
+- The old blocker was about implementation readiness, so the right retest was
+  to verify content quality and stability directly on both policy tabs before
+  changing the incident status.
