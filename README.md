@@ -5,44 +5,55 @@ Minimal Playwright scaffold for web UI and API testing against `https://www.wind
 ## Commands
 
 - `npm test` runs the full Playwright suite.
-- `npm run test:web` runs web UI tests in `tests/web-ui`.
-- `npm run test:api` runs API tests in `tests/api`.
+- `npm run test:web` runs both web UI projects.
+- `npm run test:web:unauthenticated` runs guest/public web UI coverage.
+- `npm run test:web:authenticated` runs authenticated web UI coverage.
+- `npm run test:api` runs API tests in `src/test/api`.
 - `npm run report` opens the latest HTML report.
+
+## Web UI Project Split
+
+Playwright separates the web UI suite into:
+
+- `web-ui-unauthenticated`: public/guest flows using
+  `playwright/.auth/windflu-dev-storage.json`
+- `web-ui-authenticated`: authenticated flows that depend on the setup project
+  and reuse generated role storage states
+
+Both web UI projects preserve `localStorage.isDev=true`.
 
 ## Authenticated Storage
 
-Playwright global setup can create reusable authenticated storage states when
-safe test credentials are provided through environment variables.
+The `global-setup` Playwright setup project can create reusable authenticated
+storage states when safe test credentials are provided through environment
+variables.
+
+You can keep local test credentials in `.env`. `playwright.config.ts` loads
+that file automatically for local runs.
 
 Creator account:
 
 ```bash
 WINDFLU_CREATOR_EMAIL="creator@example.com" \
 WINDFLU_CREATOR_PASSWORD="..." \
-npm run test:web
-```
-
-Brand account:
-
-```bash
-WINDFLU_BRAND_EMAIL="brand@example.com" \
-WINDFLU_BRAND_PASSWORD="..." \
-npm run test:web
+npm run test:web:authenticated
 ```
 
 Generated files are ignored by Git:
 
-- `playwright/.auth/windflu-creator-storage.json`
-- `playwright/.auth/windflu-brand-storage.json`
+- `playwright/.auth/creator-storage.json`
 
 Authenticated tests can reuse the saved state with:
 
 ```ts
 import { test } from '@playwright/test';
-import { creatorStorageStatePath } from '../../playwright/auth-storage';
+import { creatorStorageStatePath } from '../../../playwright/auth-storage';
 
 test.use({ storageState: creatorStorageStatePath });
 ```
+
+The setup project reads credentials from environment variables only. Do not
+store real login credentials in committed test-data files.
 
 Do not commit credentials, cookies, OTPs, or generated authenticated storage
 state files.

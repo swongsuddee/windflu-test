@@ -1,4 +1,4 @@
-active_provider: openai
+active_provider: claude
 
 providers:
   openai: .agents/skills/agent-workflow-orchestrator/agents/openai.yaml

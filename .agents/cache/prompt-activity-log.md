@@ -5,6 +5,8 @@ Purpose: durable project log of user prompts, agent actions, and results.
 Rules:
 
 - Append one entry for each user task that changes project files or project agent instructions.
+- Do not treat this file as mandatory startup reading.
+- Read this file only when `.agents/cache/hot-cache.md` is missing and recent context must be reconstructed.
 - Do not store secrets, real passwords, tokens, cookies, OTPs, or private personal data.
 - Do not store hidden chain-of-thought; use a concise reasoning summary / decision trace instead.
 - Record token usage only when exposed by the runtime. If token totals are not available, write `Not available in this interface`.
@@ -46,6 +48,808 @@ Reasoning summary:
 
 - ...
 ```
+
+## 2026-04-25 - Analyze Changes And Commit Push To Git
+
+Prompt summary:
+
+- User requested analyzing the current changes and then committing and pushing
+  the code to Git.
+
+Skills/tools used:
+
+- Project `agent-workflow-orchestrator`.
+- Commit policy review.
+- Git inspection commands.
+- Validation commands: `npm run lint`, `npm run format`, `npm run format:check`.
+
+Actions:
+
+- Reviewed the commit policy, current branch, remote, and working tree.
+- Inspected the change summary with `git diff --stat`.
+- Ran lint and formatting validation.
+- Prepared the project memory files for this commit/push task.
+
+Result:
+
+- The current worktree is validated for lint and formatting and is ready to be
+  staged, committed, and pushed as one intentional project-wide change set.
+
+Validation:
+
+- `npm run lint` passed.
+- `npm run format` passed after elevated file-permission access was used for
+  vendored `.agents/skills/*` files.
+- `npm run format:check` passed.
+- Playwright tests not run in this commit-prep task.
+
+Token usage:
+
+- Total: Not available in this interface
+- Input: Not available in this interface
+- Output: Not available in this interface
+
+Reasoning summary:
+
+- The repo contains a broad but coherent set of pending changes, so the right
+  approach is to validate the full worktree, commit the intentional set
+  together, and note that browser test execution was not included here.
+
+## 2026-04-25 - Make Prompt Activity Log Optional At Startup
+
+Prompt summary:
+
+- User requested changing the project rule so `prompt-activity-log.md` does not
+  need to be read during normal startup and is only read when `hot-cache.md` is
+  missing.
+
+Skills/tools used:
+
+- Project `agent-workflow-orchestrator`.
+- Local file editing.
+- Archive sync for the reusable export bundle.
+
+Actions:
+
+- Updated `AGENTS.md` to state that the prompt activity log is append-only by
+  default and only read when hot cache is missing.
+- Updated `.agents/skills/agent-workflow-orchestrator/SKILL.md` to remove
+  mandatory startup reading of the prompt activity log.
+- Updated the rules in `.agents/cache/prompt-activity-log.md` to reflect the
+  same behavior.
+- Synced the same changes into `exports/project-agent-config/` and rebuilt
+  `exports/project-agent-config.zip`.
+
+Result:
+
+- The project now uses `hot-cache.md` as the normal startup context source.
+- `prompt-activity-log.md` remains the activity record but is only a fallback
+  read source when hot cache is missing.
+
+Validation:
+
+- Verified the instruction changes in `AGENTS.md`,
+  `.agents/skills/agent-workflow-orchestrator/SKILL.md`, and
+  `.agents/cache/prompt-activity-log.md`.
+- Rebuilt `exports/project-agent-config.zip` after syncing those changes into
+  the export bundle.
+
+Token usage:
+
+- Total: Not available in this interface
+- Input: Not available in this interface
+- Output: Not available in this interface
+
+Reasoning summary:
+
+- Startup context should come from a concise hot cache. The prompt log is more
+  useful as an append-only audit trail and fallback reconstruction source than
+  as a mandatory file to read every turn.
+
+## 2026-04-25 - Check Claude Provider Effect
+
+Prompt summary:
+
+- User asked whether switching the project to Claude has any effect on the
+  current skills and workflow.
+
+Skills/tools used:
+
+- Project `agent-workflow-orchestrator`.
+- Local file inspection.
+
+Actions:
+
+- Checked `.agents/skills/agent-workflow-orchestrator/agents/active-provider.yaml`.
+- Reviewed the orchestrator `SKILL.md` and the provider YAML templates.
+- Reviewed the vendored project-local skill folders for provider-specific files.
+
+Result:
+
+- The project is now pointing at the Claude provider template, but the shared
+  workflow stays the same.
+- The orchestrator explicitly says all providers follow the same hot-cache ->
+  skill-chain -> validation -> memory-update flow.
+- The vendored skills are primarily driven by `SKILL.md`; some have only
+  `agents/openai.yaml`, and `playwright-skill` has no provider YAML at all, so
+  there is no meaningful behavior change in those skills just because Claude is
+  selected.
+
+Validation:
+
+- Confirmed `active_provider: claude`.
+- Confirmed the orchestrator provider templates advertise the same workflow
+  support flags across OpenAI, Gemini, and Claude.
+
+Token usage:
+
+- Total: Not available in this interface
+- Input: Not available in this interface
+- Output: Not available in this interface
+
+Reasoning summary:
+
+- Provider selection here is a routing/template concern, while the actual
+  project process is defined in the orchestrator `SKILL.md` and the vendored
+  skill instructions.
+
+## 2026-04-25 - Vendor Shared Skills Into Project
+
+Prompt summary:
+
+- User requested attaching `website-exploration-flow`,
+  `test-design-zephyr`, `playwright-skill`, and `skill-creator` into this
+  project instead of relying only on the local Codex skill store.
+
+Skills/tools used:
+
+- Project `agent-workflow-orchestrator`.
+- `skill-creator`.
+- Local file copying and archive validation.
+
+Actions:
+
+- Copied the four shared skills into `.agents/skills/`.
+- Kept only reusable skill assets and excluded local-only metadata such as
+  `.git` internals and `.DS_Store` from the vendored copies.
+- Updated `exports/project-agent-config/` and rebuilt
+  `exports/project-agent-config.zip` so the portable bundle includes the
+  vendored skills.
+- Updated `.agents/cache/hot-cache.md`.
+
+Result:
+
+- The repository now contains project-local copies of the four shared skills,
+  and the export bundle matches that project-local skill layout.
+
+Validation:
+
+- `find .agents/skills -maxdepth 3 -type f | sort` confirmed the vendored
+  skill files.
+- `zipinfo -1 exports/project-agent-config.zip | sort` confirmed the export zip
+  includes the vendored skills.
+
+Token usage:
+
+- Total: Not available in this interface
+- Input: Not available in this interface
+- Output: Not available in this interface
+
+Reasoning summary:
+
+- If the project should be portable across repositories and providers, the
+  referenced skills need to live inside the repo rather than only in the local
+  machine-level skill store.
+
+## 2026-04-24 - Export Reusable Project Agent Config Bundle
+
+Prompt summary:
+
+- User requested a zip file that exports the project agent and skill config for
+  reuse in other projects.
+
+Skills/tools used:
+
+- Project `agent-workflow-orchestrator`.
+- Local file editing.
+- Shell commands: `cp`, `zip`, `unzip`, `du`.
+
+Actions:
+
+- Created `exports/project-agent-config/` as a reusable bundle.
+- Added starter template files for `.agents/cache/hot-cache.md` and
+  `.agents/cache/prompt-activity-log.md`.
+- Copied `AGENTS.md` and the full
+  `.agents/skills/agent-workflow-orchestrator/` config into the bundle.
+- Created `exports/project-agent-config.zip`.
+
+Result:
+
+- The repository now contains a reusable project agent/skill configuration
+  bundle and a zip archive ready to copy into another repository.
+
+Validation:
+
+- `zip -r exports/project-agent-config.zip exports/project-agent-config` passed.
+- `unzip -l exports/project-agent-config.zip` verified the packaged files.
+- `du -h exports/project-agent-config.zip` reported archive size `12K`.
+
+Token usage:
+
+- Total: Not available in this interface
+- Input: Not available in this interface
+- Output: Not available in this interface
+
+Reasoning summary:
+
+- A portable bundle should include reusable workflow instructions and provider
+  config, but it should not carry over project-specific cache history, review
+  notes, source code, or local secret material.
+
+## 2026-04-24 - Remove Brand Authenticated Support
+
+Prompt summary:
+
+- User requested removing all code concerned with `WINDFLU_BRAND_EMAIL`
+  because brand registration does not exist yet.
+
+Skills/tools used:
+
+- Project `agent-workflow-orchestrator`.
+- Local file editing.
+- Validation commands: `npm run format:check`, `npm run lint`.
+
+Actions:
+
+- Removed brand authenticated credential handling from setup and auth-storage
+  helpers.
+- Removed brand authenticated dashboard coverage from the authenticated spec.
+- Reduced authenticated design and exploration docs to creator-only scope.
+- Removed local brand credential entries from `.env`.
+
+Result:
+
+- The authenticated path is now creator-only until brand registration and
+  reusable brand credentials exist.
+
+Validation:
+
+- `npm run format:check` passed.
+- `npm run lint` passed.
+
+Token usage:
+
+- Total: Not available in this interface
+- Input: Not available in this interface
+- Output: Not available in this interface
+
+Reasoning summary:
+
+- Inactive brand-auth support was creating a false implementation surface, so
+  the authenticated code and docs should match the current environment and
+  registration reality.
+
+## 2026-04-24 - Implement Brand Registration Success Flow
+
+Prompt summary:
+
+- User requested starting implementation for the registration success test.
+
+Skills/tools used:
+
+- Project `agent-workflow-orchestrator`.
+- `playwright-skill`.
+- `test-design-zephyr`.
+- Local file editing.
+- Real Playwright browser probes against `https://www.windflu.com/brand/register`.
+- Validation commands: `npm run format:check`, `npm run lint`,
+  `npx playwright test --project=web-ui-unauthenticated src/test/web-ui/register-flow/register-flow.spec.ts`.
+
+Actions:
+
+- Probed the live public brand registration flow and confirmed step 2 remains on
+  `/brand/register`, shows `ข้อมูลแบรนด์`, requires company name and industry,
+  and opens a policy modal from `อ่านเพิ่มเติม →`.
+- Updated `src/page/brand-register-page.ts` with real step-2 interactions.
+- Added valid registration data builders in `src/test-data/register-test-data.ts`.
+- Added `src/test/web-ui/services/register-success-account-log-service.ts`.
+- Implemented `REG-VAL-001` in
+  `src/test/web-ui/register-flow/register-flow.spec.ts`.
+- Updated `src/test/web-ui/register-flow/register-success-test-design.md`.
+- Logged blocker incident `INC-002` in `.agents/review-notes/incident-log.md`.
+
+Result:
+
+- The success-flow automation is now implemented against the real public
+  registration UI, but marked as an expected failure because the live site does
+  not currently complete registration after the visible acceptance path.
+
+Validation:
+
+- `npm run format:check` passed.
+- `npm run lint` passed.
+- `npx playwright test --project=web-ui-unauthenticated src/test/web-ui/register-flow/register-flow.spec.ts`
+  reported 2 passed, with `REG-VAL-001` counted as the intended expected
+  failure.
+
+Token usage:
+
+- Total: Not available in this interface
+- Input: Not available in this interface
+- Output: Not available in this interface
+
+Reasoning summary:
+
+- The success case needed real flow discovery before implementation. Once the
+- actual step-2 controls were known, the remaining blocker was clearly product
+- behavior, so the right implementation was a real expected-failure test plus
+- an incident entry rather than a mocked success path.
+
+## 2026-04-24 - Add Valid Registration Test Design And Success Registry
+
+Prompt summary:
+
+- User requested a test design for creating a new account with the valid flow
+  and a new file in the same feature folder to record successfully registered
+  accounts.
+
+Skills/tools used:
+
+- Project `agent-workflow-orchestrator`.
+- `test-design-zephyr`.
+- Local file editing.
+- Validation commands: `npm run format:check`, `npm run lint`.
+
+Actions:
+
+- Updated `src/test/web-ui/register-flow/register-success-test-design.md` as
+  the dedicated valid registration happy-path design.
+- Updated `src/test/web-ui/register-flow/register-success-accounts.md` as the
+  feature-local registry template for successful registrations.
+- Updated `.agents/cache/hot-cache.md`.
+
+Result:
+
+- The register feature now has explicit design coverage for successful account
+  creation and a colocated registry file for recording created accounts for
+  later reuse.
+
+Validation:
+
+- `npm run format:check` passed.
+- `npm run lint` passed.
+
+Token usage:
+
+- Total: Not available in this interface
+- Input: Not available in this interface
+- Output: Not available in this interface
+
+Reasoning summary:
+
+- The successful registration flow needs its own explicit design case and the
+  created-account record should stay beside the feature that creates it,
+  without leaking raw passwords into shared project files.
+
+## 2026-04-24 - Register Creator Reuse Account
+
+Prompt summary:
+
+- User requested storing the registered creator account for reuse in
+  authenticated coverage.
+
+Skills/tools used:
+
+- Project `agent-workflow-orchestrator`.
+- Local file editing.
+- Validation commands: `npm run format:check`, `npm run lint`.
+
+Actions:
+
+- Added the creator account entry to `src/test-data/registered-accounts.md`
+  without storing the raw password.
+- Updated local `.env` so `WINDFLU_CREATOR_EMAIL` and
+  `WINDFLU_CREATOR_PASSWORD` point at the requested creator account.
+
+Result:
+
+- The creator account is now recorded for reuse, with the password kept only in
+  local `.env` rather than in committed test-data files.
+
+Validation:
+
+- `npm run format:check` passed.
+- `npm run lint` passed.
+
+Token usage:
+
+- Total: Not available in this interface
+- Input: Not available in this interface
+- Output: Not available in this interface
+
+Reasoning summary:
+
+- The account should be reusable, but the raw password still belongs in local
+  secret storage rather than the shared account registry.
+
+## 2026-04-24 - Refactor Login Setup To Use POM And Rename Storage Files
+
+Prompt summary:
+
+- User requested making `login.setup.ts` perform login steps in the same style
+  as the login flow and saving state with the name `creator-storage`.
+
+Skills/tools used:
+
+- Project `agent-workflow-orchestrator`.
+- `playwright-skill`.
+- Local file editing.
+- Validation commands: `npm run format:check`, `npm run lint`,
+  `npx playwright test --project=global-setup`.
+
+Actions:
+
+- Added `src/page/creator-login-page.ts`.
+- Updated `src/test/web-ui/login.setup.ts` to use creator and brand login page
+  objects instead of inline selectors.
+- Updated `src/page/brand-login-page.ts` with a reusable login action.
+- Renamed storage outputs in `playwright/auth-storage.ts` to
+  `creator-storage.json` and `brand-storage.json`.
+- Updated `.gitignore` and re-ran the setup project.
+
+Result:
+
+- Auth setup now follows the project’s POM style and reports the renamed
+  storage paths during setup execution.
+
+Validation:
+
+- `npm run format:check` passed.
+- `npm run lint` passed.
+- `npx playwright test --project=global-setup` passed.
+
+Token usage:
+
+- Total: Not available in this interface
+- Input: Not available in this interface
+- Output: Not available in this interface
+
+Reasoning summary:
+
+- The setup flow should reuse the same interaction abstraction style as normal
+  login coverage, and the storage filename change belongs in the shared auth
+  path constants rather than only in setup code.
+
+## 2026-04-24 - Make Auth Setup Status Explicit
+
+Prompt summary:
+
+- User requested rechecking `login.setup.ts` because it seemed not to create
+  storage state files.
+
+Skills/tools used:
+
+- Project `agent-workflow-orchestrator`.
+- `playwright-skill`.
+- Local file editing.
+- Validation commands: `npm run format:check`, `npm run lint`,
+  `npx playwright test --project=global-setup`.
+
+Actions:
+
+- Updated `src/test/web-ui/login.setup.ts` to report per-role setup status as
+  `created`, `reused`, or `missing_credentials`.
+- Added explicit file-write verification after storage-state creation.
+- Removed the `global-setup` dependency from `web-ui-unauthenticated` in
+  `playwright.config.ts`.
+- Extended `src/test/web-ui/services/auth-storage-state-service.ts` with
+  reusable auth-storage helpers.
+- Re-ran the setup project and captured the current status output.
+
+Result:
+
+- The setup flow is now explicit about why role storage files are not present.
+- In this session, both roles reported `missing_credentials`, which explains
+  why no authenticated storage files were created.
+
+Validation:
+
+- `npm run format:check` passed.
+- `npm run lint` passed.
+- `npx playwright test --project=global-setup` passed.
+
+Token usage:
+
+- Total: Not available in this interface
+- Input: Not available in this interface
+- Output: Not available in this interface
+
+Reasoning summary:
+
+- The actual problem was silent no-op behavior, not broken storage writing. The
+  setup needed explicit status reporting and a cleaner dependency boundary so
+  missing credentials are visible immediately.
+
+## 2026-04-24 - Implement Mocked Authenticated Dashboard Tests
+
+Prompt summary:
+
+- User requested starting authenticated test implementation for dashboard cases
+  and allowed API-response mocking because backend data cannot be controlled.
+
+Skills/tools used:
+
+- Project `agent-workflow-orchestrator`.
+- `playwright-skill`.
+- Local file editing.
+- Validation commands: `npm run format:check`, `npm run lint`,
+  `npx playwright test --project=web-ui-authenticated src/test/web-ui/authenticated-user/authenticated-user.spec.ts`.
+
+Actions:
+
+- Added `src/test/web-ui/authenticated-user/authenticated-user.spec.ts`.
+- Added `src/page/authenticated-dashboard-page.ts`.
+- Added `src/test-data/dashboard-mock-data.ts`.
+- Implemented creator and brand dashboard tests for `AUT-001` and `AUT-006`
+  using a mock document/API harness.
+- Updated `src/test/web-ui/authenticated-user/authenticated-user-test-design.md`.
+- Updated `.agents/cache/hot-cache.md`.
+
+Result:
+
+- Authenticated dashboard coverage now exists for creator and brand dashboard
+  routes using mocked backend responses, without depending on live database or
+  backend state.
+
+Validation:
+
+- `npm run format:check` passed.
+- `npm run lint` passed.
+- `npx playwright test --project=web-ui-authenticated src/test/web-ui/authenticated-user/authenticated-user.spec.ts`
+  passed with 3 tests.
+
+Token usage:
+
+- Total: Not available in this interface
+- Input: Not available in this interface
+- Output: Not available in this interface
+
+Reasoning summary:
+
+- The workable first step is a frontend contract test for the authenticated
+  dashboard route shape and summary rendering, with storage-state reuse when
+  available and mocked backend responses where live data is not controllable.
+
+## 2026-04-24 - Re-colocate Feature Test Designs
+
+Prompt summary:
+
+- User changed direction and requested keeping each feature test design beside
+  its matching spec again.
+
+Skills/tools used:
+
+- Project `agent-workflow-orchestrator`.
+- Local file moves and documentation updates.
+- Validation commands: `npm run format:check`, `npm run lint`.
+
+Actions:
+
+- Moved feature `*-test-design.md` files from `src/test-design/<feature>/` back
+  into their matching `src/test/web-ui/<feature>/` folders.
+- Kept standalone exploration diagrams in `src/test-design/`.
+- Updated orchestrator rules and project cache to reflect the colocated layout.
+
+Result:
+
+- The repo now keeps feature test designs beside their specs while preserving
+  the `src/` directory structure for tests, pages, data, and standalone
+  diagrams.
+
+Validation:
+
+- `npm run format:check` passed.
+- `npm run lint` passed.
+
+Token usage:
+
+- Total: Not available in this interface
+- Input: Not available in this interface
+- Output: Not available in this interface
+
+Reasoning summary:
+
+- The useful split is between feature-specific designs and standalone
+  exploration artifacts, not between specs and their own matching feature
+  designs.
+
+## 2026-04-24 - Move Test Workspace Under src
+
+Prompt summary:
+
+- User requested updating the test directory structure to live under `src/`
+  with separate `test`, `test-design`, `test-data`, and `page` folders.
+
+Skills/tools used:
+
+- Project `agent-workflow-orchestrator`.
+- Local file moves and path rewrites.
+- Validation commands: `npm run format:check`, `npm run lint`.
+
+Actions:
+
+- Moved API specs to `src/test/api`.
+- Moved web UI specs and setup to `src/test/web-ui`.
+- Moved page objects to `src/page`.
+- Moved reusable test data to `src/test-data`.
+- Moved feature and standalone test-design Markdown files to `src/test-design`.
+- Updated Playwright config, imports, docs, and project cache to the new paths.
+
+Result:
+
+- The repository test workspace now follows the requested `src/` layout.
+
+Validation:
+
+- `npm run format:check` passed.
+- `npm run lint` passed.
+
+Token usage:
+
+- Total: Not available in this interface
+- Input: Not available in this interface
+- Output: Not available in this interface
+
+Reasoning summary:
+
+- The directory change is mostly mechanical, but the path rules had to be
+  normalized across specs, data, page objects, config, and project memory so
+  the new structure is coherent rather than just moved files.
+
+## 2026-04-24 - Add Mermaid Safety Rule To Agent Workflow
+
+Prompt summary:
+
+- User requested updating the agent skill so Mermaid diagram creation avoids the
+  parser failure that happened with route placeholders like `:id`.
+
+Skills/tools used:
+
+- Project `agent-workflow-orchestrator`.
+- Local file editing.
+- Validation commands: `npm run format:check`, `npm run lint`.
+
+Actions:
+
+- Added a `Mermaid Diagram Rules` section to
+  `.agents/skills/agent-workflow-orchestrator/SKILL.md`.
+- Added an explicit rule to replace syntax-heavy route placeholders such as
+  `:id` with Mermaid-safe forms like `{id}` or `[id]` in diagram labels.
+- Updated `.agents/cache/hot-cache.md`.
+
+Result:
+
+- The project agent workflow now includes a concrete Mermaid safety rule for
+  future flow and state diagram generation.
+
+Validation:
+
+- `npm run format:check` passed.
+- `npm run lint` passed.
+
+Token usage:
+
+- Total: Not available in this interface
+- Input: Not available in this interface
+- Output: Not available in this interface
+
+Reasoning summary:
+
+- Mermaid state diagrams treat characters like `:` as syntax, so the workflow
+  needs an explicit safe-label rule instead of relying on ad hoc fixes.
+
+## 2026-04-24 - Rewrite Authenticated Design Without Guest Scope
+
+Prompt summary:
+
+- User requested updating authenticated test design so it covers authenticated
+  cases only and does not use guest framing.
+
+Skills/tools used:
+
+- Project `agent-workflow-orchestrator`.
+- `test-design-zephyr`.
+- Local file editing.
+- Validation commands: `npm run format:check`, `npm run lint`.
+
+Actions:
+
+- Rewrote `tests/web-ui/test-designs/authenticated-exploration-flow-diagrams.md`
+  as an authenticated-only design artifact.
+- Removed guest redirect inventory and guest transition wording from that file.
+- Kept the focus on setup-generated creator and brand storage states, protected
+  route inventory, authenticated transitions, and authenticated Mermaid
+  diagrams.
+- Updated `.agents/cache/hot-cache.md`.
+
+Result:
+
+- The authenticated exploration design now describes only authenticated route
+  coverage and setup-based preconditions.
+
+Validation:
+
+- `npm run format:check` passed.
+- `npm run lint` passed.
+
+Token usage:
+
+- Total: Not available in this interface
+- Input: Not available in this interface
+- Output: Not available in this interface
+
+Reasoning summary:
+
+- Guest redirect evidence belongs in guest exploration or blocker notes, while
+  authenticated design should start from authenticated storage state and define
+  only authenticated expectations.
+
+## 2026-04-24 - Split Web UI Projects And Implement Login Setup
+
+Prompt summary:
+
+- User requested implementing `tests/web-ui/login.setup.ts`, recording login as
+  storage state, splitting `web-ui` into unauthenticated and authenticated
+  projects, and keeping `isDev: true` in both flows.
+
+Skills/tools used:
+
+- Project `agent-workflow-orchestrator`.
+- `playwright-skill`.
+- Local file editing.
+- Validation commands: `npm run format:check`, `npm run lint`,
+  `npx playwright test --project=global-setup`,
+  `npx playwright test --project=web-ui-unauthenticated tests/web-ui/login-flow/login-flow.spec.ts`.
+
+Actions:
+
+- Removed the old `globalSetup` config path and implemented project-based setup
+  in `tests/web-ui/login.setup.ts`.
+- Split Playwright into `web-ui-unauthenticated` and
+  `web-ui-authenticated` projects.
+- Kept `playwright/.auth/windflu-dev-storage.json` as the shared `isDev` base
+  storage state.
+- Added env-backed creator/brand credential helpers to
+  `tests/web-ui/test-data/login-test-data.ts`.
+- Updated package scripts and README to match the new project layout.
+- Updated authenticated design docs and `.agents/cache/hot-cache.md`.
+
+Result:
+
+- Playwright now has one setup-project flow for generating authenticated storage
+  states, one unauthenticated project for guest coverage, and one authenticated
+  project ready to reuse generated role storage files.
+
+Validation:
+
+- `npm run format:check` passed.
+- `npm run lint` passed.
+- `npx playwright test --project=global-setup` passed.
+- `npx playwright test --project=web-ui-unauthenticated tests/web-ui/login-flow/login-flow.spec.ts`
+  passed with 5 tests.
+
+Token usage:
+
+- Total: Not available in this interface
+- Input: Not available in this interface
+- Output: Not available in this interface
+
+Reasoning summary:
+
+- The clean split here is a project-based setup test plus separate guest and
+  authenticated projects, with credentials kept in env vars and `isDev` carried
+  through the shared base storage state instead of hardcoding secrets in repo
+  files.
 
 ## 2026-04-24 - Bootstrap Git And Add Commit Policy
 

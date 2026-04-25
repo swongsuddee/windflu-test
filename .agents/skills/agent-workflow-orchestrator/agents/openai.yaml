@@ -7,7 +7,7 @@ provider:
   name: openai
   family: openai
   portal_ready: true
-  status: active-template
+  model: gpt-4o
 
 workflow_support:
   reads_hot_cache_first: true

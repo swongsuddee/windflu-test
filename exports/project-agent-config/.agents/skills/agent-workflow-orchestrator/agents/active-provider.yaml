@@ -1,0 +1,11 @@
+active_provider: openai
+
+providers:
+  openai: .agents/skills/agent-workflow-orchestrator/agents/openai.yaml
+  gemini: .agents/skills/agent-workflow-orchestrator/agents/gemini.yaml
+  claude: .agents/skills/agent-workflow-orchestrator/agents/claude.yaml
+
+switching:
+  method: file-based
+  instruction: Update `active_provider` to `openai`, `gemini`, or `claude`.
+  fallback_provider: openai

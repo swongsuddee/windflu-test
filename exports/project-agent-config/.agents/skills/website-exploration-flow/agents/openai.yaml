@@ -1,0 +1,4 @@
+interface:
+  display_name: 'Website Exploration Flow'
+  short_description: 'Explore websites and map QA flows'
+  default_prompt: 'Use $website-exploration-flow to explore this website and create flow/state diagrams.'

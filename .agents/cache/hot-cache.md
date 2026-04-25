@@ -1,6 +1,6 @@
 # Hot Cache
 
-Last updated: 2026-04-24
+Last updated: 2026-04-25
 
 ## Project Purpose
 
@@ -13,30 +13,42 @@ Playwright test project for Windflu web UI/API testing against `https://www.wind
 - Commit/push policy:
   `.agents/skills/agent-workflow-orchestrator/COMMIT_POLICY.md`
 - Hot cache: `.agents/cache/hot-cache.md`
-- Prompt activity log: `.agents/cache/prompt-activity-log.md`
+- Prompt activity log:
+  `.agents/cache/prompt-activity-log.md` only when hot cache is missing and
+  recent context must be reconstructed
 
 ## Current Structure
 
 - Config: `playwright.config.ts`
+- Reusable agent-config export:
+  `exports/project-agent-config/` and `exports/project-agent-config.zip`
+- Project-local vendored skills:
+  `.agents/skills/website-exploration-flow/`,
+  `.agents/skills/test-design-zephyr/`,
+  `.agents/skills/playwright-skill/`, and
+  `.agents/skills/skill-creator/`
 - Agent provider selector:
   `.agents/skills/agent-workflow-orchestrator/agents/active-provider.yaml`
 - Git remote: `origin https://github.com/swongsuddee/windflu-test.git`
-- Playwright auth setup: `playwright/global-setup.ts`
+- Playwright auth setup test: `src/test/web-ui/login.setup.ts`
 - Playwright auth storage constants: `playwright/auth-storage.ts`
-- Web UI feature tests/designs: `tests/web-ui/<feature>/*.spec.ts` and
-  `tests/web-ui/<feature>/*-test-design.md`
-- Page objects: `tests/web-ui/pages/*.ts`
-- Test data: `tests/web-ui/test-data/*.ts`
-- Registered account registry: `tests/web-ui/test-data/registered-accounts.md`
+- Creator login POM: `src/page/creator-login-page.ts`
+- Web UI feature tests/designs: `src/test/web-ui/<feature>/*.spec.ts` and
+  `src/test/web-ui/<feature>/*-test-design.md`
+- Page objects: `src/page/*.ts`
+- Test data: `src/test-data/*`
+- Registered account registry: `src/test-data/registered-accounts.md`
+- Mocked authenticated dashboard POM: `src/page/authenticated-dashboard-page.ts`
+- Mocked dashboard data: `src/test-data/dashboard-mock-data.ts`
 - Incident log for developer fix and QA retest:
   `.agents/review-notes/incident-log.md`
 - Authenticated exploration note:
   `.agents/review-notes/authenticated-exploration-note.md`
 - Authenticated user test design:
-  `tests/web-ui/authenticated-user/authenticated-user-test-design.md`
-- Standalone exploration diagrams: `tests/web-ui/test-designs/*.md`
-- Latest exploration diagrams: `tests/web-ui/test-designs/website-exploration-flow-diagrams.md`
-- Authenticated exploration diagrams: `tests/web-ui/test-designs/authenticated-exploration-flow-diagrams.md`
+  `src/test/web-ui/authenticated-user/authenticated-user-test-design.md`
+- Standalone exploration diagrams: `src/test-design/*.md`
+- Latest exploration diagrams: `src/test-design/website-exploration-flow-diagrams.md`
+- Authenticated exploration diagrams: `src/test-design/authenticated-exploration-flow-diagrams.md`
 
 ## Existing Global Skills Used By Project
 
@@ -44,6 +56,9 @@ Playwright test project for Windflu web UI/API testing against `https://www.wind
 - `test-design-zephyr`: Zephyr-compatible test design
 - `playwright-skill`: Playwright implementation patterns
 - `skill-creator`: skill creation/update workflow
+
+These four skills are now also vendored into `.agents/skills/` so the project
+does not depend only on the local Codex skill store.
 
 ## Current Test Coverage
 
@@ -56,8 +71,114 @@ Unauthenticated public web UI coverage is split by flow:
 - Campaign detail
 - Legal policy pages
 
+Authenticated dashboard coverage is implemented for:
+
+- Creator dashboard (`AUT-001`)
+
 ## Recent Changes
 
+- 2026-04-25: Reviewed the full repo diff, ran `npm run lint` and
+  `npm run format:check`, and prepared the current project-wide restructure and
+  agent-config changes for commit/push on `main`.
+- Updated `AGENTS.md`,
+  `.agents/skills/agent-workflow-orchestrator/SKILL.md`, and
+  `.agents/cache/prompt-activity-log.md` so the prompt activity log is no
+  longer mandatory startup reading and is used mainly for append-only logging,
+  with fallback reading only when `hot-cache.md` is missing.
+- Synced the same prompt-log behavior into
+  `exports/project-agent-config/` and rebuilt
+  `exports/project-agent-config.zip`.
+- The active provider selector in
+  `.agents/skills/agent-workflow-orchestrator/agents/active-provider.yaml`
+  is now set to `claude`.
+- Verified that provider switching changes the selected provider template, but
+  the orchestrator workflow and project-local skill behavior remain the same.
+- Vendored the shared skills `website-exploration-flow`,
+  `test-design-zephyr`, `playwright-skill`, and `skill-creator` into
+  `.agents/skills/` for project-local reuse.
+- Updated `exports/project-agent-config/` and
+  `exports/project-agent-config.zip` so the reusable project-agent bundle now
+  includes those four vendored skills.
+- Added reusable export bundle at `exports/project-agent-config/` containing
+  `AGENTS.md`, the `agent-workflow-orchestrator` skill, provider selector
+  files, and starter `.agents/cache` templates for reuse in other projects.
+- Created archive `exports/project-agent-config.zip` from the reusable export
+  bundle and verified its contents with `unzip -l`.
+- Implemented `REG-VAL-001` in
+  `src/test/web-ui/register-flow/register-flow.spec.ts` for the real public
+  brand registration success flow.
+- Expanded `src/page/brand-register-page.ts` with step-2 brand profile and
+  policy acceptance interactions.
+- Added valid registration data builders to `src/test-data/register-test-data.ts`.
+- Added feature-local account log writer
+  `src/test/web-ui/services/register-success-account-log-service.ts` to append
+  successful registrations to
+  `src/test/web-ui/register-flow/register-success-accounts.md`.
+- Updated `src/test/web-ui/register-flow/register-success-test-design.md` with
+  the observed real step-2 controls and blocker evidence.
+- Logged incident `INC-002` because the live public brand registration success
+  flow still fails after the visible policy acceptance path.
+- Added valid registration success-flow design
+  `src/test/web-ui/register-flow/register-success-test-design.md`.
+- Added or updated feature-local successful registration registry
+  `src/test/web-ui/register-flow/register-success-accounts.md` for accounts
+  created by the valid register flow without storing raw passwords.
+- Removed brand authenticated credential and storage-state support because brand
+  registration and reusable brand accounts are not available yet.
+- Reduced authenticated coverage and design scope to creator-only.
+- Updated local `.env` creator credentials to
+  `jojoetest20260423212848@example.com` for authenticated reuse.
+- Added the registered creator account entry to
+  `src/test-data/registered-accounts.md` without storing the raw password.
+- Updated `src/test/web-ui/login.setup.ts` to use page objects for creator and
+  login steps instead of inline selectors.
+- Added `src/page/creator-login-page.ts` for creator login interactions.
+- Renamed authenticated storage output to:
+  `playwright/.auth/creator-storage.json`.
+- Updated `.gitignore` and `playwright/auth-storage.ts` to the new storage
+  filename.
+- Updated `src/test/web-ui/login.setup.ts` so auth setup now reports
+  `created`, `reused`, or `missing_credentials` per role instead of silently
+  doing nothing when credentials are absent.
+- Updated `playwright.config.ts` so `web-ui-unauthenticated` no longer depends
+  on `global-setup`.
+- Added helper functions to
+  `src/test/web-ui/services/auth-storage-state-service.ts` for future auth
+  storage-state reuse.
+- Added `src/test/web-ui/authenticated-user/authenticated-user.spec.ts` with
+  mock-based dashboard coverage for creator and brand dashboard routes.
+- Added `src/page/authenticated-dashboard-page.ts` to host the authenticated
+  dashboard mock harness and assertions.
+- Added `src/test-data/dashboard-mock-data.ts` for creator and brand dashboard
+  response fixtures.
+- Updated `src/test/web-ui/authenticated-user/authenticated-user-test-design.md`
+  so the dashboard cases reflect the current mocked implementation.
+- Moved feature test-design files back beside their matching specs under
+  `src/test/web-ui/<feature>/`.
+- Restructured the test workspace under `src/`:
+  `src/test/api`, `src/test/web-ui`, `src/test-design`, `src/test-data`, and
+  `src/page`.
+- Kept standalone exploration diagrams in `src/test-design/`.
+- Updated Playwright config, imports, docs, and project metadata to the current
+  `src/` paths.
+- Updated `.agents/skills/agent-workflow-orchestrator/SKILL.md` with Mermaid
+  diagram rules so route placeholders like `:id` are rewritten to Mermaid-safe
+  forms such as `{id}` in diagrams.
+- Rewrote `tests/web-ui/test-designs/authenticated-exploration-flow-diagrams.md`
+  so it is authenticated-only and no longer mixes guest redirect evidence into
+  authenticated coverage design.
+- Replaced the old `playwright/global-setup.ts` path with project-based setup in
+  `tests/web-ui/login.setup.ts`.
+- Split the Playwright web UI project into `web-ui-unauthenticated` and
+  `web-ui-authenticated`.
+- Updated `playwright.config.ts` so both web UI projects preserve
+  `localStorage.isDev=true` via `playwright/.auth/windflu-dev-storage.json`.
+- Added env-backed login credential helpers in
+  `tests/web-ui/test-data/login-test-data.ts` for creator and brand auth setup.
+- Updated `package.json` with `test:web:unauthenticated` and
+  `test:web:authenticated` scripts.
+- Updated `README.md` and authenticated design docs to point at
+  `tests/web-ui/login.setup.ts`.
 - Initialized this folder as a Git repository on branch `main`.
 - Added Git remote `origin` pointing to
   `https://github.com/swongsuddee/windflu-test.git`.
@@ -136,6 +257,58 @@ Unauthenticated public web UI coverage is split by flow:
 - Added Mermaid navigation flow, creator registration state diagram, and campaign work lifecycle state diagram.
 - Current exploration observed privacy policy `V1.0.6` dated `23 เมษายน 2569`, visible creator `/register`, and `/contact` still returning 404.
 - Added analytics fields to `.agents/cache/prompt-activity-log.md`: skills/tools used, token usage, and reasoning summary / decision trace.
+
+## Active Assumptions
+
+- The user wants a portable starter bundle for project agent and skill
+  configuration, not a full repository export.
+- Reusable starter cache/log templates are more appropriate than copying the
+  current project-specific hot cache and prompt history into another repo.
+- Vendored project-local copies of the four shared skills should include only
+  useful skill assets, excluding local-only metadata such as `.git` internals
+  and `.DS_Store`.
+- Claude should follow the same project workflow as OpenAI and Gemini because
+  provider switching is template-based and the orchestrator skill defines the
+  shared process.
+- The hot cache remains the primary startup context source; the prompt activity
+  log is now a write-first audit trail and fallback source only.
+
+## Validation Status
+
+- `npm run lint` passed on 2026-04-25.
+- `npm run format` passed on 2026-04-25 after escalating file permissions for
+  vendored `.agents/skills/*` files.
+- `npm run format:check` passed on 2026-04-25.
+- `cp AGENTS.md exports/project-agent-config/AGENTS.md` and matching syncs for
+  orchestrator `SKILL.md` and prompt-log template completed successfully.
+- `(cd exports && zip -r project-agent-config.zip project-agent-config)` passed
+  after syncing the updated prompt-log behavior into the export bundle.
+- `sed -n '1,220p' .agents/skills/agent-workflow-orchestrator/agents/active-provider.yaml`
+  confirmed `active_provider: claude`.
+- Reviewed `.agents/skills/agent-workflow-orchestrator/SKILL.md` and the
+  provider YAML files to confirm provider switching does not alter the shared
+  project workflow.
+- `find .agents/skills -maxdepth 3 -type f | sort` confirmed the four vendored
+  skill trees under `.agents/skills/`.
+- `zipinfo -1 exports/project-agent-config.zip | sort` confirmed the export
+  bundle now includes the vendored skill directories and files.
+- `(cd exports && zip -r project-agent-config.zip project-agent-config)` passed.
+- `du -h exports/project-agent-config.zip` reported archive size `56K`.
+
+## Known Caveats
+
+- The exported `AGENTS.md` and orchestrator skill are workflow-ready, but the
+  target project should still update the hot cache starter content and any
+  project-specific wording after copying them in.
+- `playwright-skill` was vendored without its local `.git` directory or
+  `.DS_Store`, because those are not part of the reusable skill behavior.
+
+## Next Useful Action
+
+- Copy `exports/project-agent-config.zip` into the target repository and tailor
+  the starter cache entries and any project-specific instructions there, or
+  update project docs to explicitly point contributors at the vendored
+  `.agents/skills/*` copies.
 - Updated `AGENTS.md` and `.agents/skills/agent-workflow-orchestrator/SKILL.md` to require analytics fields in future activity log entries.
 - Added project-scoped orchestrator skill under `.agents/skills/agent-workflow-orchestrator`.
 - Added `AGENTS.md` with project agent instructions.
@@ -148,6 +321,18 @@ Unauthenticated public web UI coverage is split by flow:
 
 - `npm run lint` passed
 - `npm run format:check` passed
+- `npx playwright test --project=global-setup` now covers creator setup only.
+- `npx playwright test --project=web-ui-authenticated src/test/web-ui/authenticated-user/authenticated-user.spec.ts`
+  passed with 3 tests after running outside the sandbox.
+- Feature design re-colocation validated with formatting and lint checks.
+- `src/` test-directory migration validated with formatting and lint checks.
+- Mermaid-rule update validated with formatting and lint checks.
+- Authenticated exploration design rewrite validated with formatting and lint
+  checks.
+- `npx playwright test --project=global-setup` passed after running outside the
+  sandbox.
+- `npx playwright test --project=web-ui-unauthenticated tests/web-ui/login-flow/login-flow.spec.ts`
+  passed with 5 tests after running outside the sandbox.
 - Git bootstrap and commit-policy update validated with formatting and lint
   checks.
 - `AGENTS.md` provider-switching update validated with formatting and lint checks.
@@ -170,12 +355,19 @@ Unauthenticated public web UI coverage is split by flow:
 
 - Do not store real credentials or secrets in `.agents/cache/hot-cache.md`.
 - Do not store real credentials or secrets in `.agents/cache/prompt-activity-log.md`.
-- Do not store real passwords, OTPs, cookies, auth tokens, recovery links, or private personal data in `tests/web-ui/test-data/registered-accounts.md`.
+- Do not store real passwords, OTPs, cookies, auth tokens, recovery links, or private personal data in `src/test-data/registered-accounts.md`.
 - Token usage can be logged only when exposed by the runtime; otherwise use `Not available in this interface`.
 - Do not log hidden chain-of-thought; use concise reasoning summaries / decision traces.
 - Public site uses `playwright/.auth/windflu-dev-storage.json` with `localStorage.isDev=true`; it is not an authenticated cookie state.
-- Authenticated creator/brand internals remain blocked until safe role-specific
-  test credentials or authenticated storage states are available.
+- Authenticated creator internals still require safe creator credentials in
+  `WINDFLU_CREATOR_EMAIL` / `WINDFLU_CREATOR_PASSWORD` before
+  `src/test/web-ui/login.setup.ts` can create creator storage state.
+- Current authenticated dashboard assertions use a mock document/API harness,
+  not live backend data, because backend state is not controllable in this
+  environment.
+- In the current workspace run, `login.setup.ts` is not broken; it reports
+  `missing_credentials` because no `WINDFLU_CREATOR_*` or `WINDFLU_BRAND_*`
+  environment variables were provided and no role storage files already exist.
 - Authenticated storage files are intentionally ignored by Git and must not be
   committed.
 - Push to GitHub still depends on the local environment having permission to
@@ -188,17 +380,16 @@ Unauthenticated public web UI coverage is split by flow:
 
 ## Next Useful Action
 
-Continue with authenticated exploration once role storage states exist. Review
-`INC-001` in `.agents/review-notes/incident-log.md`, assign developer fix
-ownership, then retest `/contact` and remove the active incident after
-recording closure. For new web UI coverage, create a feature folder under
-`tests/web-ui/<feature>/` and keep `<feature>.spec.ts` beside
-`<feature>-test-design.md`. Provide safe creator/brand credentials through
-environment variables to let `playwright/global-setup.ts` create authenticated
-storage states, then re-run authenticated exploration using
-`creatorStorageStatePath` or `brandStorageStatePath`. If tests create accounts,
-append sanitized details to
-`tests/web-ui/test-data/registered-accounts.md`. Run
-`npm run format:check` and `npm run lint` after editing project files. Run
+Provide safe creator credentials through environment variables so
+`src/test/web-ui/login.setup.ts` can create authenticated storage states, then
+continue with real authenticated exploration and replace the mocked dashboard
+harness with live authenticated assertions where data contracts are stable.
+Review `INC-001` in
+`.agents/review-notes/incident-log.md`, assign developer fix ownership, then
+retest `/contact` and remove the active incident after recording closure. For
+new web UI coverage, create a feature folder under `src/test/web-ui/<feature>/`
+and keep `<feature>.spec.ts` beside `<feature>-test-design.md`. If tests create
+accounts, append sanitized details to `src/test-data/registered-accounts.md`.
+Run `npm run format:check` and `npm run lint` after editing project files. Run
 targeted Playwright tests when test code changes. Append task results to
 `.agents/cache/prompt-activity-log.md`.

@@ -1,0 +1,4 @@
+interface:
+  display_name: 'Test Design Zephyr'
+  short_description: 'Design Zephyr-ready QA test cases'
+  default_prompt: 'Use $test-design-zephyr to design Zephyr-ready test cases from these requirements.'

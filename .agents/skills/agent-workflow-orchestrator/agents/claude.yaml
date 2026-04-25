@@ -7,7 +7,7 @@ provider:
   name: claude
   family: anthropic
   portal_ready: true
-  status: template
+  model: claude-sonnet-4-6
 
 workflow_support:
   reads_hot_cache_first: true
