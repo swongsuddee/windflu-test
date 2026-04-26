@@ -57,3 +57,17 @@ store real login credentials in committed test-data files.
 
 Do not commit credentials, cookies, OTPs, or generated authenticated storage
 state files.
+
+## To Do
+
+1. Improve agent skill for test design.
+
+## Unfinish Test Feature Implementation
+
+- Brand create-campaign:
+  `BRC-006` to `BRC-008` are still unfinished for budget, payment, and success
+  flow coverage.
+- Creator registration success design still needs refresh to match the current
+  live implementation coverage.
+- Legal-policy design/spec still needs full alignment with the latest stable
+  content exploration.

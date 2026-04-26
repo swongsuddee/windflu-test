@@ -3551,3 +3551,44 @@ Reasoning summary:
 
 - The smallest correct change was to add a standard MIT `LICENSE` file at the
   repo root and avoid over-validating a plain-text legal document.
+
+## 2026-04-26 19:14:14 +07
+
+Prompt summary:
+
+- Update the README with a `To Do` section and an `Unfinish test feature implementation` section.
+
+Skills/tools used:
+
+- `agent-workflow-orchestrator`
+- `functions.exec_command`
+- `functions.apply_patch`
+- `multi_tool_use.parallel`
+
+Actions taken:
+
+- Updated `README.md` to add:
+  `## To Do` with `Improve agent skill for test design`
+  and `## Unfinish Test Feature Implementation` with the current unfinished
+  feature areas.
+- Updated `.agents/cache/hot-cache.md`.
+
+Result:
+
+- The README now documents the requested outstanding work areas at the repo
+  level.
+
+Validation:
+
+- `npx prettier --check README.md` passed.
+
+Token usage:
+
+- Total: Not available in this interface
+- Input: Not available in this interface
+- Output: Not available in this interface
+
+Reasoning summary:
+
+- This was a documentation-only change, so the right scope was to add the two
+  requested sections without expanding the README into a broader project plan.
