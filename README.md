@@ -28,8 +28,8 @@ The `global-setup` Playwright setup project can create reusable authenticated
 storage states when safe test credentials are provided through environment
 variables.
 
-You can keep local test credentials in `.env`. `playwright.config.ts` loads
-that file automatically for local runs.
+You can copy `.env.example` to `.env` and keep local test credentials there.
+`playwright.config.ts` loads `.env` automatically for local runs.
 
 Creator account:
 

@@ -3642,3 +3642,45 @@ Reasoning summary:
 - Remote branch protection was not something I could safely assume or enforce
   here, so the correct implementation was a repo-managed local hook plus README
   documentation and local activation for this clone.
+
+## 2026-04-26 19:29:38 +07
+
+Prompt summary:
+
+- Add an environment example file.
+
+Skills/tools used:
+
+- `agent-workflow-orchestrator`
+- `functions.exec_command`
+- `functions.apply_patch`
+- `multi_tool_use.parallel`
+
+Actions taken:
+
+- Added `.env.example` with placeholder values for:
+  `WINDFLU_CREATOR_EMAIL`, `WINDFLU_CREATOR_PASSWORD`,
+  `WINDFLU_BRAND_EMAIL`, and `WINDFLU_BRAND_PASSWORD`.
+- Updated `README.md` to tell local users to copy `.env.example` to `.env`.
+- Updated `.agents/cache/hot-cache.md`.
+
+Result:
+
+- The repository now includes a safe onboarding example for local authenticated
+  test credentials without exposing real values.
+
+Validation:
+
+- `npx prettier --check README.md .agents/cache/hot-cache.md .agents/cache/prompt-activity-log.md` passed.
+
+Token usage:
+
+- Total: Not available in this interface
+- Input: Not available in this interface
+- Output: Not available in this interface
+
+Reasoning summary:
+
+- The safe implementation was to add a committed `.env.example` with only the
+  env vars actually used by the repo and keep real credentials in the ignored
+  `.env` file.
