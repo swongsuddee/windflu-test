@@ -71,3 +71,21 @@ state files.
   live implementation coverage.
 - Legal-policy design/spec still needs full alignment with the latest stable
   content exploration.
+
+## Git Branch Policy
+
+Local branch policy for this repository:
+
+- Direct commits to `main` are blocked.
+- Working branches must use one of these prefixes:
+  `feature/*`, `fix/*`, `test/*`, `chore/*`
+- Changes should merge into `main` through a pull request.
+
+This repository keeps the policy in `.githooks/pre-commit`.
+
+To enable it in a local clone:
+
+```bash
+git config core.hooksPath .githooks
+chmod +x .githooks/pre-commit
+```

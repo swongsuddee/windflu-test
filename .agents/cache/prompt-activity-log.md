@@ -3592,3 +3592,53 @@ Reasoning summary:
 
 - This was a documentation-only change, so the right scope was to add the two
   requested sections without expanding the README into a broader project plan.
+
+## 2026-04-26 19:19:00 +07
+
+Prompt summary:
+
+- Configure the default Git branch policy: block direct commits to `main`,
+  require branch names like `feature/*`, `fix/*`, `test/*`, `chore/*`, and use
+  PRs into `main`.
+
+Skills/tools used:
+
+- `agent-workflow-orchestrator`
+- `functions.exec_command`
+- `functions.apply_patch`
+- `multi_tool_use.parallel`
+
+Actions taken:
+
+- Added `.githooks/pre-commit` to enforce the local branch policy:
+  block direct commits to `main`/`master` and reject branch names outside
+  `feature/*`, `fix/*`, `test/*`, and `chore/*`.
+- Updated `README.md` with a `Git Branch Policy` section documenting the rules
+  and setup command.
+- Marked the hook executable.
+- Activated the policy in this local clone with
+  `git config core.hooksPath .githooks`.
+
+Result:
+
+- This clone now enforces the requested local branch policy before commits.
+
+Validation:
+
+- `git config --get core.hooksPath` returned `.githooks`.
+- `ls -l .githooks/pre-commit` confirmed the hook is executable.
+- `git branch --show-current` returned `main`, which means direct commits from
+  the current branch are now blocked by the hook.
+- `npx prettier --check README.md .agents/cache/hot-cache.md .agents/cache/prompt-activity-log.md` passed.
+
+Token usage:
+
+- Total: Not available in this interface
+- Input: Not available in this interface
+- Output: Not available in this interface
+
+Reasoning summary:
+
+- Remote branch protection was not something I could safely assume or enforce
+  here, so the correct implementation was a repo-managed local hook plus README
+  documentation and local activation for this clone.

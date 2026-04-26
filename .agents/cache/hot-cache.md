@@ -23,6 +23,7 @@ Playwright test project for Windflu web UI and API coverage against
 
 ## Recent Changes
 
+- 2026-04-26: Added a repo-managed branch policy in `.githooks/pre-commit`, documented it in `README.md`, and activated this clone with `git config core.hooksPath .githooks` to block direct commits to `main` and enforce `feature/*`, `fix/*`, `test/*`, or `chore/*` branch names.
 - 2026-04-26: Updated `README.md` with new `To Do` and `Unfinish Test Feature Implementation` sections.
 - 2026-04-26: Added a root `LICENSE` file using the MIT license text.
 - 2026-04-26: Replaced brittle phase-2 brand create-campaign locators with structure-based selectors around `ระยะเวลาแคมเปญ`, which let `BRC-005` pass on the live route; the suite now validates at `5 passed`, `3 skipped`.
@@ -33,7 +34,6 @@ Playwright test project for Windflu web UI and API coverage against
 - 2026-04-26: Updated `src/test-data/campaign.ts` so brand campaign titles are generated with the `ครั้งที่ <increment>-` prefix instead of staying static.
 - 2026-04-26: Added `src/test-data/campaign.ts` and created `src/test/web-ui/brand-create-campaign/brand-create-campaign.design.md` with six PROF-safe cases for authenticated route access, step-1 surface, title/detail/image state, upload acceptance, stepper visibility, and conservative progression behavior.
 - 2026-04-26: Explored the authenticated brand create-campaign flow to 96% confidence, confirming step-1 field inventory, local image upload acceptance, title/image checklist updates, and unresolved platform/step-2 progression behavior.
-- 2026-04-26: Explored the authenticated brand area to 98% confidence, confirming `/brand/login` redirects into `/brand/campaigns`, stable shell routes for campaigns/dashboard/payments/profile/create-campaign, and logout returning to `/brand/login`.
 
 ## Active Assumptions
 

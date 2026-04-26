@@ -1,0 +1,32 @@
+#!/bin/sh
+
+set -eu
+
+branch_name="$(git rev-parse --abbrev-ref HEAD 2>/dev/null || printf '%s' '')"
+
+if [ -z "$branch_name" ]; then
+  exit 0
+fi
+
+if [ "$branch_name" = "HEAD" ]; then
+  exit 0
+fi
+
+case "$branch_name" in
+  main|master)
+    printf '%s\n' "Direct commits to '$branch_name' are blocked."
+    printf '%s\n' "Create a working branch and open a pull request into main."
+    exit 1
+    ;;
+esac
+
+case "$branch_name" in
+  feature/*|fix/*|test/*|chore/*)
+    exit 0
+    ;;
+  *)
+    printf '%s\n' "Branch '$branch_name' does not match the required naming policy."
+    printf '%s\n' "Use one of: feature/*, fix/*, test/*, chore/*"
+    exit 1
+    ;;
+esac
