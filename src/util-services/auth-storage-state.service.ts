@@ -1,8 +1,5 @@
 import { existsSync } from 'fs';
-import {
-  brandStorageStatePath,
-  creatorStorageStatePath,
-} from '../../../../playwright/auth-storage';
+import { brandStorageStatePath, creatorStorageStatePath } from '../../playwright/auth-storage';
 
 type AuthRole = 'brand' | 'creator';
 

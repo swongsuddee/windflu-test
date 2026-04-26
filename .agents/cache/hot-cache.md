@@ -23,16 +23,17 @@ Playwright test project for Windflu web UI and API coverage against
 
 ## Recent Changes
 
-- 2026-04-26: Split the old `login-flow` area into `brand-login-flow` and `creator-login-flow`, added a brand login setup project plus shared auth setup service, and validated both login suites and both setup projects against the live site.
-- 2026-04-26: Applied the remaining naming-policy cleanup by renaming legacy `-service.ts` files to `.service.ts` and legacy `-test-design.md` files to `.design.md`, then updated the active code references.
-- 2026-04-26: Switched registration success logging to per-run random passwords, made `src/test-data/register-success-accounts.md` a gitignored local registry, and taught the log service to bootstrap that file automatically.
-- 2026-04-26: Revalidated creator and brand registration success specs after the password-logging change; both targeted Playwright runs passed against the live site.
-- 2026-04-26: Moved the shared registration success registry to `src/test-data/register-success-accounts.md`, updated the log service path, and removed the remaining brand design reference to the old creator-local file path.
-- 2026-04-26: Implemented `REG-VAL-001` for the brand success path with `src/test/web-ui/brand-register/register-success.spec.ts`, updated `src/page/brand-register-page.ts` to the current inline policy-card flow, and verified the live run with `1 passed`.
-- 2026-04-26: Rewrote `src/test/web-ui/brand-register/register-success.design.md` to match the 98% confidence brand success-flow exploration, replacing the old modal/blocker assumptions with the current inline policy-card success path.
-- 2026-04-26: Fixed the editor `process` type error in `playwright.config.ts` by adding an explicit Node types reference at the top of the file; file-scoped Prettier validation passed.
-- 2026-04-26: Re-explored the public legal policy pages, closed `INC-003`, and confirmed stable long-form privacy and terms content with visible tabs and update stamps dated `25 เมษายน 2569`.
-- 2026-04-26: Implemented `REG-VAL-001` for the creator success path with `src/test/web-ui/creator-register-flow/register-success.spec.ts`, extended creator register helpers, improved success-account log insertion, and verified the live run with `1 passed`.
+- 2026-04-26: Replaced brittle phase-2 brand create-campaign locators with structure-based selectors around `ระยะเวลาแคมเปญ`, which let `BRC-005` pass on the live route; the suite now validates at `5 passed`, `3 skipped`.
+- 2026-04-26: Added `INC-004` for the brand create-campaign range-picker rerender issue, tried a wait-based and DOM-click date-selection helper, and confirmed the suite must still keep `BRC-005` to `BRC-008` blocked while stable coverage remains `4 passed`, `4 skipped`.
+- 2026-04-26: Realigned `src/test/web-ui/brand-create-campaign/brand-create-campaign.spec.ts` to the phased flow, implemented stable coverage through phase-2 blocking (`4 passed`), and added `src/util-services/created-campaign-log.service.ts` for future success-path campaign logging.
+- 2026-04-26: Redesigned `src/test/web-ui/brand-create-campaign/brand-create-campaign.design.md` into phased coverage for form/preview, date validation, QR-only payment selection, and success handoff, and added the gitignored local registry `src/test-data/created-campaigns.md`.
+- 2026-04-26: Implemented `src/test/web-ui/brand-create-campaign/brand-create-campaign.spec.ts` plus `src/page/brand-create-campaign-page.ts` and validated the new suite with `6 passed` against the live authenticated brand route.
+- 2026-04-26: Updated `src/test-data/campaign.ts` so brand campaign titles are generated with the `ครั้งที่ <increment>-` prefix instead of staying static.
+- 2026-04-26: Added `src/test-data/campaign.ts` and created `src/test/web-ui/brand-create-campaign/brand-create-campaign.design.md` with six PROF-safe cases for authenticated route access, step-1 surface, title/detail/image state, upload acceptance, stepper visibility, and conservative progression behavior.
+- 2026-04-26: Explored the authenticated brand create-campaign flow to 96% confidence, confirming step-1 field inventory, local image upload acceptance, title/image checklist updates, and unresolved platform/step-2 progression behavior.
+- 2026-04-26: Explored the authenticated brand area to 98% confidence, confirming `/brand/login` redirects into `/brand/campaigns`, stable shell routes for campaigns/dashboard/payments/profile/create-campaign, and logout returning to `/brand/login`.
+- 2026-04-26: Rewrote `src/test/web-ui/creator-authenticated-user/authenticated-user.design.md` for the current PROF creator state, replacing the old low-confidence route-only draft with five creator feature cases for dashboard, my-work, payouts, profile, and logout plus API-mocking guidance.
+- 2026-04-26: Re-explored the creator authenticated area to 98% confidence, confirming stable shell behavior on dashboard/my-work/payouts/profile/KYC, a public 404 on the sampled submit route, and logout returning to `/`.
 
 ## Active Assumptions
 
@@ -47,13 +48,19 @@ Validation status (2026-04-26):
 
 - lint: pass
 - format: pass
-- tests: pass — creator register suites passed (`7 passed`, `1 passed`), brand register success passed (`1 passed`), brand/creator login suites passed (`4 passed` each), and both login setup projects passed (`1 passed` each)
+- tests: partial — creator register suites passed (`7 passed`, `1 passed`), brand register success passed (`1 passed`), brand/creator login suites passed (`4 passed` each), login setup projects passed (`1 passed` each), old brand create-campaign suite passed (`6 passed`), and phased brand create-campaign currently validates with `5 passed`, `3 skipped`
 
 ## Known Caveats
 
 - The remaining stale success-path design file is the creator success design;
   brand success design and implementation now match the 2026-04-26
   exploration.
+- `src/test-data/created-campaigns.md` is intentionally gitignored and should
+  hold only safe local campaign metadata after true create-campaign success.
+- The current PROF create-campaign range picker still needs cautious
+  automation handling, but the structure-based phase-2 locators now support
+  the valid date-range progression case; downstream budget/payment/success
+  coverage remains blocked and is tracked under `INC-004`.
 - The legal-policy test design and spec still reflect the earlier conservative
   navigation-only scope even though `INC-003` is now closed.
 - The shared success-account registry now lives in `src/test-data/`; keep new
@@ -65,7 +72,5 @@ Validation status (2026-04-26):
 
 ## Next Useful Action
 
-Refresh the legal-policy design/spec and the remaining stale creator
-success-path design file so they match the current explorations and
-implementations, then add authenticated brand coverage now that reusable brand
-storage setup exists.
+Implement `BRC-006` to `BRC-008` from the budget/payment/success phases now
+that `BRC-005` can reach the next phase with the generalized step-2 locators.

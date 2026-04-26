@@ -2893,3 +2893,621 @@ Reasoning summary:
   was to rename that feature explicitly and add a parallel creator login flow
   based on a fresh live probe rather than trying to force both roles into one
   mixed folder.
+
+## 2026-04-26 13:40:22 +07
+
+Prompt summary:
+
+- Re-explore the creator flow after authentication.
+
+Skills/tools used:
+
+- `agent-workflow-orchestrator`
+- `website-exploration-flow`
+- `functions.exec_command`
+- `functions.apply_patch`
+- `multi_tool_use.parallel`
+
+Actions taken:
+
+- Read the current low-confidence authenticated exploration and the active
+  creator authenticated spec/page object context.
+- Probed live creator-authenticated routes using
+  `playwright/.auth/creator-storage.json`:
+  `/creator/dashboard`, `/creator/my-work`, `/creator/payouts`,
+  `/creator/profile`, `/creator/kyc`, and
+  `/creator/campaigns/69e61d06a282a107c2d34ff0/submit`.
+- Captured observed headings, buttons, navigation links, and route outcomes
+  for the authenticated creator shell.
+- Verified that the sampled submit route resolves to a public 404 state even
+  while authenticated.
+- Verified that logout returns to homepage `/`; standard pointer clicking was
+  intercepted during probing, but a DOM click triggered a real logout
+  navigation.
+- Rewrote
+  `src/test-design/exploration-authenticated-user-actions.md` with the current
+  authenticated creator route inventory, transition table, Mermaid diagrams,
+  QA notes, and `Confidence level: 98%`.
+- Updated `.agents/cache/hot-cache.md`.
+
+Result:
+
+- The creator authenticated exploration is now refreshed with direct live
+  evidence and high confidence, replacing the earlier route-only assumptions.
+
+Validation:
+
+- `npx prettier --write src/test-design/exploration-authenticated-user-actions.md` completed.
+- `node --input-type=module -e ...` live probes confirmed:
+  dashboard, my-work, payouts, profile, and KYC stay inside creator
+  authenticated shell; sampled submit route returns 404; logout returns to `/`.
+
+Token usage:
+
+- Total: Not available in this interface
+- Input: Not available in this interface
+- Output: Not available in this interface
+
+Reasoning summary:
+
+- The existing authenticated document was too assumption-heavy to support
+  reliable next-step test design, so the right move was to re-probe the live
+  creator session and document only directly observed authenticated behavior.
+
+## 2026-04-26 13:48:34 +07
+
+Prompt summary:
+
+- Create the authenticated creator test design for dashboard, my-work,
+  payouts, profile, and logout, with PROF-safe API-mocking guidance.
+
+Skills/tools used:
+
+- `agent-workflow-orchestrator`
+- `test-design-zephyr`
+- `functions.exec_command`
+- `functions.apply_patch`
+- `multi_tool_use.parallel`
+
+Actions taken:
+
+- Read the refreshed creator authenticated exploration and the stale
+  `authenticated-user.design.md`.
+- Confirmed the current exploration source file is
+  `src/test-design/exploration-authenticated-creator-actions.md`.
+- Rewrote
+  `src/test/web-ui/creator-authenticated-user/authenticated-user.design.md`
+  from the old 84% route-only draft into a 98% confidence creator-specific
+  design covering:
+  dashboard, my-work, payouts, profile, and logout.
+- Removed the obsolete submit-route focus from the design and replaced that
+  slot with explicit logout coverage.
+- Added implementation guidance for PROF:
+  keep real auth/session/navigation live and use selective API mocking only for
+  unstable content payloads on dashboard, my-work, payouts, and profile.
+- Updated `.agents/cache/hot-cache.md`.
+
+Result:
+
+- The authenticated creator design now matches the current live creator state
+  and the requested feature scope, and it is ready for spec implementation.
+
+Validation:
+
+- `npx prettier --write src/test/web-ui/creator-authenticated-user/authenticated-user.design.md` completed.
+- `npx prettier --check src/test/web-ui/creator-authenticated-user/authenticated-user.design.md .agents/cache/hot-cache.md .agents/cache/prompt-activity-log.md` passed after the file write settled.
+
+Token usage:
+
+- Total: Not available in this interface
+- Input: Not available in this interface
+- Output: Not available in this interface
+
+Reasoning summary:
+
+- Because the user asked for test design, the right update was to convert the
+  high-confidence authenticated exploration directly into a focused creator
+  design for the requested routes, while explicitly separating live auth
+  behavior from selectively mocked PROF data payloads.
+
+## 2026-04-26 13:55:53 +07
+
+Prompt summary:
+
+- Explore the authenticated brand account flow.
+
+Skills/tools used:
+
+- `agent-workflow-orchestrator`
+- `website-exploration-flow`
+- `functions.exec_command`
+- `functions.apply_patch`
+- `multi_tool_use.parallel`
+
+Actions taken:
+
+- Probed the authenticated brand session using
+  `playwright/.auth/brand-storage.json`.
+- Confirmed that opening `/brand/login` while authenticated redirects to
+  `/brand/campaigns`.
+- Captured live route/module evidence for:
+  `/brand/campaigns`, `/brand/dashboard`, `/brand/payments/pending`,
+  `/brand/payments`, `/brand/profile`, and `/brand/create-campaign`.
+- Verified authenticated brand logout returns to `/brand/login`.
+- Probed the current `รีวิว Draft` action on the campaigns page and found it
+  did not navigate during the current probe.
+- Noted the same shell click-interception pattern seen elsewhere: normal
+  pointer clicks on some shell actions were intercepted by layout layers,
+  while DOM-triggered clicks still proved the underlying navigation.
+- Created
+  `src/test-design/exploration-authenticated-brand-actions.md` with the route
+  inventory, transition flow, Mermaid flow diagram, QA notes, and
+  `Confidence level: 98%`.
+- Updated `.agents/cache/hot-cache.md`.
+
+Result:
+
+- The project now has a high-confidence authenticated brand exploration that
+  documents the current landing redirect, stable shell routes, current empty
+  payment states, profile baseline, create-campaign access, and logout target.
+
+Validation:
+
+- `npx prettier --write src/test-design/exploration-authenticated-brand-actions.md` completed.
+- Live Playwright probes confirmed:
+  `/brand/login -> /brand/campaigns`,
+  stable authenticated routes for campaigns/dashboard/payments/profile/create-campaign,
+  and logout returning to `/brand/login`.
+
+Token usage:
+
+- Total: Not available in this interface
+- Input: Not available in this interface
+- Output: Not available in this interface
+
+Reasoning summary:
+
+- Since there was no existing brand-authenticated exploration baseline, the
+  right first step was route discovery from the live logged-in shell, then
+  direct probing of the main brand areas and exit flow before any test design.
+
+## 2026-04-26 14:31:20 +07
+
+Prompt summary:
+
+- Explore the authenticated brand create-campaign flow using the provided
+  campaign title/detail and image asset under `src/assets`.
+
+Skills/tools used:
+
+- `agent-workflow-orchestrator`
+- `website-exploration-flow`
+- `functions.exec_command`
+- `functions.apply_patch`
+- `multi_tool_use.parallel`
+
+Actions taken:
+
+- Confirmed the local image asset exists at
+  `src/assets/campaign-image-1.jpg`.
+- Inspected the live authenticated `/brand/create-campaign` route using the
+  current brand storage state.
+- Mapped step-1 controls:
+  title input, rich-text detail editor, category select, platform button grid,
+  image upload, requirements input, optional link input, and shipping
+  checkbox.
+- Verified the provided title is retained by the form state.
+- Verified the rich-text editor accepts campaign detail text.
+- Verified the provided local image is accepted by the upload control and that
+  the UI exposes `ปรับแต่งรูปภาพ` after upload.
+- Verified the checklist updates to `2/6 กรอกแล้ว` when title and image are
+  recognized.
+- Confirmed the route presents a three-step wizard with visible stepper text
+  for campaign info, duration, and budget.
+- Probed platform selection and step progression; platform remains the current
+  unresolved control under automation, and step-2 progression did not settle
+  conclusively during today’s probes.
+- Created `src/test-design/exploration-brand-create-campaign.md` with direct
+  observations, transition flow, Mermaid diagram, QA notes, and
+  `Confidence level: 96%`.
+- Updated `.agents/cache/hot-cache.md`.
+
+Result:
+
+- The project now has a persisted authenticated brand create-campaign
+  exploration that documents the current step-1 field surface, image-upload
+  behavior, checklist reaction, and the still-unresolved platform/progression
+  behavior.
+
+Validation:
+
+- `npx prettier --write src/test-design/exploration-brand-create-campaign.md` completed.
+- Live Playwright probes confirmed:
+  title retention, editor input, image upload acceptance, and checklist update
+  to `2/6`.
+
+Token usage:
+
+- Total: Not available in this interface
+- Input: Not available in this interface
+- Output: Not available in this interface
+
+Reasoning summary:
+
+- The right exploration boundary was to verify the live wizard structure and
+  real step-1 state changes with the provided content/image, while explicitly
+  stopping short of publish-like actions and documenting the unresolved
+  platform/progression behavior instead of guessing.
+
+## 2026-04-26 14:36:52 +07
+
+Prompt summary:
+
+- Generate the create-campaign test design and add a reusable campaign test
+  data file under `src/test-data`.
+
+Skills/tools used:
+
+- `agent-workflow-orchestrator`
+- `test-design-zephyr`
+- `functions.exec_command`
+- `functions.apply_patch`
+- `multi_tool_use.parallel`
+
+Actions taken:
+
+- Created `src/test-data/campaign.ts` with the provided campaign title, detail
+  text, and image path, as a reusable non-AI-generated seed file.
+- Created
+  `src/test/web-ui/brand-create-campaign/brand-create-campaign.design.md`
+  beside the future implementation path.
+- Converted the approved 6-case estimate into the final Zephyr-style design
+  using `BRC-001` to `BRC-006`.
+- Kept the design aligned to the current exploration boundary:
+  authenticated route access, step-1 field surface, title/detail/image state,
+  upload acceptance, visible stepper, and conservative progression behavior.
+- Updated `.agents/cache/hot-cache.md`.
+
+Result:
+
+- The create-campaign area now has a persisted reusable test-data seed and a
+  full PROF-safe design ready for implementation.
+
+Validation:
+
+- `npx prettier --write src/test-data/campaign.ts src/test/web-ui/brand-create-campaign/brand-create-campaign.design.md` completed.
+- `npx prettier --check src/test-data/campaign.ts src/test/web-ui/brand-create-campaign/brand-create-campaign.design.md .agents/cache/hot-cache.md .agents/cache/prompt-activity-log.md` passed after the file write settled.
+
+Token usage:
+
+- Total: Not available in this interface
+- Input: Not available in this interface
+- Output: Not available in this interface
+
+Reasoning summary:
+
+- Since the user confirmed the proposed scope and explicitly wanted a reusable
+  campaign data file under `src/test-data`, the correct next step was to save
+  both the seed data and the final design beside the future spec rather than
+  leaving the work as estimation-only.
+
+## 2026-04-26 14:41:10 +07
+
+Prompt summary:
+
+- Add an auto-increment-style prefix `ครั้งที่ x-` to the campaign name seed.
+
+Skills/tools used:
+
+- `agent-workflow-orchestrator`
+- `functions.exec_command`
+- `functions.apply_patch`
+- `multi_tool_use.parallel`
+
+Actions taken:
+
+- Updated `src/test-data/campaign.ts` so the brand create-campaign seed is no
+  longer a static title.
+- Added a reusable helper that generates a timestamp-like increment label and
+  prefixes the base title as `ครั้งที่ <increment>-เดินเล่นเบา ๆ ทางไม่ไกล`.
+- Kept the provided campaign detail text and image path unchanged.
+- Updated `.agents/cache/hot-cache.md`.
+
+Result:
+
+- Future create-campaign tests can use a fresh prefixed title each run instead
+  of reusing the same static campaign name.
+
+Validation:
+
+- `npx prettier --write src/test-data/campaign.ts` completed.
+- `npx prettier --check src/test-data/campaign.ts` passed.
+
+Token usage:
+
+- Total: Not available in this interface
+- Input: Not available in this interface
+- Output: Not available in this interface
+
+Reasoning summary:
+
+- The smallest correct change was to make the campaign seed produce a reusable
+  prefixed title while leaving the rest of the campaign content stable for the
+  upcoming create-campaign implementation.
+
+## 2026-04-26 15:08:48 +07
+
+Prompt summary:
+
+- Implement the test coverage for authenticated brand create-campaign.
+
+Skills/tools used:
+
+- `agent-workflow-orchestrator`
+- `playwright-skill`
+- `functions.exec_command`
+- `functions.apply_patch`
+- `multi_tool_use.parallel`
+
+Actions taken:
+
+- Added `src/page/brand-create-campaign-page.ts` with route, shell, step-1
+  surface, upload, checklist, and conservative next-step helpers.
+- Added `src/test/web-ui/brand-create-campaign/brand-create-campaign.spec.ts`
+  implementing `BRC-001` to `BRC-006`.
+- Used the reusable `createBrandCreateCampaignTestData()` seed from
+  `src/test-data/campaign.ts`.
+- Reused authenticated brand storage through
+  `resolveAuthStorageState('brand')`.
+- Reused `installCommonBrowserApiMocks()` for browser API stability.
+- Fixed two plumbing issues discovered during validation:
+  the incorrect browser-mock import path in the new spec and the incorrect
+  relative import to `playwright/auth-storage` inside
+  `src/util-services/auth-storage-state.service.ts`.
+- Tightened brand create-campaign locators to avoid strict-mode collisions and
+  switched the conservative `ถัดไป` action to a DOM-triggered fallback for the
+  known flaky interaction path.
+- Updated `.agents/cache/hot-cache.md`.
+
+Result:
+
+- The authenticated brand create-campaign coverage is now implemented and the
+  full targeted suite passes against the live site.
+
+Validation:
+
+- `npx prettier --check src/page/brand-create-campaign-page.ts src/test/web-ui/brand-create-campaign/brand-create-campaign.spec.ts src/test-data/campaign.ts src/util-services/auth-storage-state.service.ts .agents/cache/hot-cache.md .agents/cache/prompt-activity-log.md` passed.
+- `npm run lint -- src/page/brand-create-campaign-page.ts src/test/web-ui/brand-create-campaign/brand-create-campaign.spec.ts src/test-data/campaign.ts src/util-services/auth-storage-state.service.ts` passed.
+- `npx playwright test --project=web-ui-unauthenticated src/test/web-ui/brand-create-campaign/brand-create-campaign.spec.ts` passed with `6 passed`.
+
+Token usage:
+
+- Total: Not available in this interface
+- Input: Not available in this interface
+- Output: Not available in this interface
+
+Reasoning summary:
+
+- The design already defined a conservative boundary, so the implementation
+  focused on stable step-1 and route assertions, then adapted to the live route
+  by tightening shell locators and using a DOM-click fallback only for the
+  known flaky next-step interaction.
+
+## 2026-04-26 15:24:41 +07
+
+Prompt summary:
+
+- Update the brand create-campaign test design to the new phase-based
+  structure and create a local log file for created campaigns similar to the
+  registration success registry.
+
+Skills/tools used:
+
+- `agent-workflow-orchestrator`
+- `test-design-zephyr`
+- `functions.exec_command`
+- `functions.apply_patch`
+- `multi_tool_use.parallel`
+
+Actions taken:
+
+- Replaced `src/test/web-ui/brand-create-campaign/brand-create-campaign.design.md`
+  with a phased design covering:
+  phase 1 form and preview, deferred phase 1.1 crop/adjust, phase 2 date
+  validation, phase 3 payment selection, and QR-only success handoff.
+- Added the new local campaign registry
+  `src/test-data/created-campaigns.md`.
+- Added `src/test-data/created-campaigns.md` to `.gitignore` so it stays a
+  workspace-local registry like the registration success account log.
+- Updated `.agents/cache/hot-cache.md`.
+
+Result:
+
+- The brand create-campaign design now matches the requested phase split and
+  the repository has a dedicated local registry path for future successful
+  campaign creations.
+
+Validation:
+
+- `npx prettier --write src/test/web-ui/brand-create-campaign/brand-create-campaign.design.md src/test-data/created-campaigns.md` completed.
+- `npx prettier --check src/test/web-ui/brand-create-campaign/brand-create-campaign.design.md src/test-data/created-campaigns.md` passed.
+
+Token usage:
+
+- Total: Not available in this interface
+- Input: Not available in this interface
+- Output: Not available in this interface
+
+Reasoning summary:
+
+- The smallest correct update was to redesign the existing create-campaign
+  coverage around the requested phases and mirror the existing local
+  registration-log pattern with a gitignored campaign registry that stores only
+  safe metadata.
+
+## 2026-04-26 16:07:00 +07
+
+Prompt summary:
+
+- Implement the brand create-campaign test flow from the phased design.
+
+Skills/tools used:
+
+- `agent-workflow-orchestrator`
+- `playwright-skill`
+- `functions.exec_command`
+- `functions.write_stdin`
+- `functions.apply_patch`
+- `multi_tool_use.parallel`
+
+Actions taken:
+
+- Probed the live authenticated brand create-campaign route with temporary
+  Playwright exploration to identify the real phase-1 and phase-2 gating:
+  image-save upload, category selection, platform click, and date-step
+  validation.
+- Removed the temporary probe spec after capturing the route behavior.
+- Updated `src/page/brand-create-campaign-page.ts` with helpers for image-save
+  completion, stable phase-1 completion, and date-phase assertions.
+- Rewrote `src/test/web-ui/brand-create-campaign/brand-create-campaign.spec.ts`
+  to match the phased design.
+- Implemented active coverage for `BRC-001` to `BRC-004`.
+- Added explicit `fixme` placeholders for `BRC-005` to `BRC-008` because the
+  live PROF range picker rerenders unstably after start-date selection, which
+  currently blocks reliable downstream budget/payment/success automation.
+- Added `src/util-services/created-campaign-log.service.ts` for future
+  successful campaign registry writes.
+- Updated `.agents/cache/hot-cache.md`.
+
+Result:
+
+- The brand create-campaign implementation now matches the stable current
+  automation boundary and preserves the remaining phased IDs as honest blocked
+  coverage rather than false-positive tests.
+
+Validation:
+
+- `npx prettier --write src/page/brand-create-campaign-page.ts src/test/web-ui/brand-create-campaign/brand-create-campaign.spec.ts src/util-services/created-campaign-log.service.ts` completed.
+- `npm run lint -- src/page/brand-create-campaign-page.ts src/test/web-ui/brand-create-campaign/brand-create-campaign.spec.ts src/util-services/created-campaign-log.service.ts` passed.
+- `npx playwright test --project=web-ui-unauthenticated src/test/web-ui/brand-create-campaign/brand-create-campaign.spec.ts` passed with `4 passed`, `4 skipped`.
+
+Token usage:
+
+- Total: Not available in this interface
+- Input: Not available in this interface
+- Output: Not available in this interface
+
+Reasoning summary:
+
+- The live route proved stable through phase 1 and phase-2 blocking only, so
+  the correct implementation was to ship the reliable coverage, scaffold the
+  success logger, and mark the later IDs as `fixme` until the range-picker
+  behavior is stable enough for trustworthy automation.
+
+## 2026-04-26 16:34:00 +07
+
+Prompt summary:
+
+- Record the brand create-campaign date-range instability as an incident and
+  try the date-field start/end selection approach with waits.
+
+Skills/tools used:
+
+- `agent-workflow-orchestrator`
+- `playwright-skill`
+- `functions.exec_command`
+- `functions.write_stdin`
+- `functions.apply_patch`
+- `multi_tool_use.parallel`
+
+Actions taken:
+
+- Added `INC-004` to `.agents/review-notes/incident-log.md` for the live
+  create-campaign range-picker rerender behavior and documented the current
+  wait-based workaround attempt.
+- Extended `src/page/brand-create-campaign-page.ts` with calendar-day helpers,
+  budget-phase locators, and a date-range selection attempt that uses waits and
+  DOM-triggered clicks rather than plain pointer clicks.
+- Temporarily promoted `BRC-005` from `fixme` into an active implementation to
+  validate whether the range picker could now progress to the next phase.
+- Retested the live flow and confirmed the widget still drops the end-date
+  target after the first selection.
+- Restored `BRC-005` to `fixme` with an explicit reference to `INC-004`, then
+  revalidated the suite.
+- Updated `.agents/cache/hot-cache.md`.
+
+Result:
+
+- The incident is now tracked as `INC-004`, the improved calendar helper is
+  retained for future use, and the active suite remains truthful with stable
+  coverage at `4 passed`, `4 skipped`.
+
+Validation:
+
+- `npx prettier --write src/page/brand-create-campaign-page.ts src/test/web-ui/brand-create-campaign/brand-create-campaign.spec.ts .agents/review-notes/incident-log.md` completed.
+- `npx prettier --check .agents/review-notes/incident-log.md src/page/brand-create-campaign-page.ts src/test/web-ui/brand-create-campaign/brand-create-campaign.spec.ts` passed.
+- `npx playwright test --project=web-ui-unauthenticated src/test/web-ui/brand-create-campaign/brand-create-campaign.spec.ts` first reproduced the end-date failure in `BRC-005`, then passed after restoring the block with `4 passed`, `4 skipped`.
+
+Token usage:
+
+- Total: Not available in this interface
+- Input: Not available in this interface
+- Output: Not available in this interface
+
+Reasoning summary:
+
+- The right outcome was to test the user’s suggested date-selection approach
+  directly, keep the incident open because the end-date target still vanishes
+  after the first selection, and leave the suite green by keeping the later
+  phase blocked until the widget interaction is stable enough for reliable
+  automation.
+
+## 2026-04-26 16:48:00 +07
+
+Prompt summary:
+
+- Recheck the phase-2 date locators in `brand-create-campaign-page.ts`
+  because the hardcoded rendered-date and month locators are too brittle.
+
+Skills/tools used:
+
+- `agent-workflow-orchestrator`
+- `playwright-skill`
+- `functions.exec_command`
+- `functions.write_stdin`
+- `functions.apply_patch`
+- `multi_tool_use.parallel`
+
+Actions taken:
+
+- Replaced the hardcoded phase-2 locators in
+  `src/page/brand-create-campaign-page.ts`:
+  the exact `26/04/2026` button and hardcoded `March 2026` / `April 2026`
+  headings were removed.
+- Added structure-based date-phase selectors using the nearby
+  `ระยะเวลาแคมเปญ` field label plus a generic visible `button[data-day]`
+  locator for calendar visibility.
+- Revalidated the create-campaign suite against the live route.
+
+Result:
+
+- The generalized locators proved more reliable than the previous hardcoded
+  render-specific locators, and `BRC-005` now passes on the live route.
+
+Validation:
+
+- `npx prettier --check src/page/brand-create-campaign-page.ts src/test/web-ui/brand-create-campaign/brand-create-campaign.spec.ts` passed.
+- `npx playwright test --project=web-ui-unauthenticated src/test/web-ui/brand-create-campaign/brand-create-campaign.spec.ts` passed with `5 passed`, `3 skipped`.
+
+Token usage:
+
+- Total: Not available in this interface
+- Input: Not available in this interface
+- Output: Not available in this interface
+
+Reasoning summary:
+
+- The locator problem was real: exact rendered dates and month labels are the
+  wrong abstraction for this widget, so the safer fix was to anchor the date
+  control to its field label and treat calendar visibility as the presence of
+  real day buttons rather than specific month text.

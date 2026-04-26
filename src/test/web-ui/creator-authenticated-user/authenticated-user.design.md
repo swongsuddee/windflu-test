@@ -1,74 +1,73 @@
 # Authenticated User Test Design
 
-Source: prepared from `src/test-design/exploration-authenticated-user-actions.md`
-and the Playwright setup project.
+Source:
 
-Implementation: `src/test/web-ui/authenticated-user/authenticated-user.spec.ts`
+- `src/test-design/exploration-authenticated-creator-actions.md`
+- current creator authenticated storage setup project
 
-Scope: authenticated creator route access after the Playwright setup project
-has generated creator storage state.
+Implementation: `src/test/web-ui/creator-authenticated-user/authenticated-user.spec.ts`
 
-Confidence level: 84%
+Scope: authenticated creator coverage for dashboard, my-work, payouts,
+profile, and logout after the Playwright setup project has generated creator
+storage state.
+
+Confidence level: 98%
 
 ## Assumptions
 
 - Creator tests use `creatorStorageStatePath` from `playwright/auth-storage.ts`.
-- `src/test/web-ui/creator-login.setup.ts` has already generated the required storage
-  state by using `WINDFLU_CREATOR_EMAIL` / `WINDFLU_CREATOR_PASSWORD`.
-- Authenticated tests should not store credentials, cookies, OTPs, or generated
-  storage state files in Git.
-- Brand authenticated coverage is deferred until brand registration and
-  reusable brand credentials exist.
-
-## Clarification Needed Before Full Detail Coverage
-
-[Flow / Navigation]
-
-- What is the expected default landing page after creator login?
-- Should campaign submit open a submission form, onboarding requirement, or
-  campaign participation state for logged-in creators?
-
-[Business rules]
-
-- Does creator campaign submit require profile completion or connected social
-  accounts?
-
-[Integration / backend behavior]
-
-- Is there seeded creator data for my-work, payouts, and profile?
+- `src/test/web-ui/creator-login.setup.ts` has already generated the required
+  storage state by using `WINDFLU_CREATOR_EMAIL` / `WINDFLU_CREATOR_PASSWORD`.
+- Authenticated tests should not store credentials, cookies, OTPs, or storage
+  state files in Git.
+- PROF data is live and can drift, so implementation may mock selected data
+  APIs while keeping the real authenticated shell, route protection, and
+  logout flow live.
 
 ## Test Coverage Estimation
 
-Total: 5 prepared test cases
+Confidence level: 98%
+
+Total: 5 test cases
 
 Breakdown:
 
-- Creator authenticated access: 5
+- Creator dashboard: 1
+- Creator my-work: 1
+- Creator payouts: 1
+- Creator profile: 1
+- Creator logout: 1
 
-Affected: 0
-New: 5
+Affected: 5
+New: 0
 Obsolete: 0
 
 Reasoning:
 
-- This avoids testing unknown dashboard details before authenticated exploration
-  confirms real content.
-- It is not too few because it covers every currently implementable protected
-  creator route.
-- It is not too many because brand authenticated coverage is deferred until
-  brand registration and reusable brand credentials exist.
+- This is not too many because it covers the five requested creator features
+  only, using the stable current seeded state rather than branching into KYC,
+  submit-flow, or non-empty history permutations.
+- This is not too few because each creator feature has a distinct authenticated
+  route and user outcome that should be protected separately.
+- PROF-specific data volatility is handled by recommending API mocking only for
+  unstable content payloads, not for auth/session routing.
 
 ## Prepared Test Cases
 
-| Test Case ID | Module                | Summary                                           | Objective                                                       | Preconditions                                                                     | Priority | Labels                                       | Test Type | Step # | Test Step                                                        | Expected Result                                                                                 | Remarked                                               |
-| ------------ | --------------------- | ------------------------------------------------- | --------------------------------------------------------------- | --------------------------------------------------------------------------------- | -------- | -------------------------------------------- | --------- | ------ | ---------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
-| AUT-001      | Creator Authenticated | Verify creator dashboard opens from storage state | Ensure a logged-in creator can access dashboard without login   | Creator storage state exists at `creatorStorageStatePath`                         | High     | auth, creator, smoke, automation-candidate   | Web UI    | 1      | Start test with creator storage state                            | Browser context uses authenticated creator storage state                                        | Initial implementation checks real route access only   |
-|              |                       |                                                   |                                                                 |                                                                                   |          |                                              |           | 2      | Navigate to `/creator/dashboard`                                 | User remains outside `/login`; creator dashboard or authenticated shell is visible              | Refine page assertions after authenticated exploration |
-| AUT-002      | Creator Authenticated | Verify creator my-work opens from storage state   | Ensure logged-in creator can access work management             | Creator storage state exists at `creatorStorageStatePath`                         | High     | auth, creator, work, automation-candidate    | Web UI    | 1      | Start test with creator storage state                            | Browser context is authenticated as creator                                                     |                                                        |
-|              |                       |                                                   |                                                                 |                                                                                   |          |                                              |           | 2      | Navigate to `/creator/my-work`                                   | User remains outside `/login`; my-work page or authenticated shell is visible                   | Refine page assertions after seeded work data is known |
-| AUT-003      | Creator Authenticated | Verify creator payouts opens from storage state   | Ensure logged-in creator can access finance page                | Creator storage state exists at `creatorStorageStatePath`                         | Medium   | auth, creator, payouts, automation-candidate | Web UI    | 1      | Start test with creator storage state                            | Browser context is authenticated as creator                                                     |                                                        |
-|              |                       |                                                   |                                                                 |                                                                                   |          |                                              |           | 2      | Navigate to `/creator/payouts`                                   | User remains outside `/login`; payouts page or authenticated shell is visible                   | Refine assertions after payout seed data is known      |
-| AUT-004      | Creator Authenticated | Verify creator profile opens from storage state   | Ensure logged-in creator can access profile page                | Creator storage state exists at `creatorStorageStatePath`                         | High     | auth, creator, profile, automation-candidate | Web UI    | 1      | Start test with creator storage state                            | Browser context is authenticated as creator                                                     |                                                        |
-|              |                       |                                                   |                                                                 |                                                                                   |          |                                              |           | 2      | Navigate to `/creator/profile`                                   | User remains outside `/login`; profile page or authenticated shell is visible                   |                                                        |
-| AUT-005      | Creator Authenticated | Verify creator campaign submit route access       | Ensure logged-in creator can open protected campaign submission | Creator storage state exists and campaign `69e61d06a282a107c2d34ff0` is available | High     | auth, creator, campaign-submit               | Web UI    | 1      | Start test with creator storage state                            | Browser context is authenticated as creator                                                     |                                                        |
-|              |                       |                                                   |                                                                 |                                                                                   |          |                                              |           | 2      | Navigate to `/creator/campaigns/69e61d06a282a107c2d34ff0/submit` | User remains outside `/login`; submission, eligibility, or authenticated campaign state appears | Refine after submit-flow exploration                   |
+| Test Case ID | Module                | Summary                                                  | Objective                                                          | Preconditions                                                                  | Priority | Labels                                                   | Test Type | Step # | Test Step                                                             | Expected Result                                                                      | Remarked                                                                                     |
+| ------------ | --------------------- | -------------------------------------------------------- | ------------------------------------------------------------------ | ------------------------------------------------------------------------------ | -------- | -------------------------------------------------------- | --------- | ------ | --------------------------------------------------------------------- | ------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------- |
+| AUT-001      | Creator Authenticated | Verify creator dashboard opens with authenticated shell  | Ensure a logged-in creator can access dashboard without login gate | Creator storage state exists at `creatorStorageStatePath`                      | High     | auth, creator, dashboard, smoke, automation-candidate    | Web UI    | 1      | Start test with creator storage state                                 | Browser context uses authenticated creator storage state                             | Keep real auth/session live                                                                  |
+|              |                       |                                                          |                                                                    |                                                                                |          |                                                          |           | 2      | Navigate to `/creator/dashboard`                                      | User remains outside `/login` and stays on `/creator/dashboard`                      |                                                                                              |
+|              |                       |                                                          |                                                                    |                                                                                |          |                                                          |           | 3      | Inspect the authenticated shell and dashboard summary area            | Shared creator navigation and dashboard marker `สรุปคุณภาพผลงาน` are visible         | In PROF, mock summary-data API only if metric payload drift breaks stable zero-state UI      |
+| AUT-002      | Creator Authenticated | Verify creator my-work empty-state baseline              | Ensure a logged-in creator can access my-work and see safe status  | Creator storage state exists at `creatorStorageStatePath`                      | High     | auth, creator, my-work, regression, automation-candidate | Web UI    | 1      | Start test with creator storage state                                 | Browser context is authenticated as creator                                          |                                                                                              |
+|              |                       |                                                          |                                                                    |                                                                                |          |                                                          |           | 2      | Navigate to `/creator/my-work`                                        | User remains outside `/login` and stays on `/creator/my-work`                        |                                                                                              |
+|              |                       |                                                          |                                                                    |                                                                                |          |                                                          |           | 3      | Inspect the current work summary and empty-state area                 | Current seeded empty-state marker `ยังไม่มีผลงาน` and CTA `ค้นหาแคมเปญ` are visible  | Use API mocking for work-summary/history payloads if PROF data stops returning empty state   |
+| AUT-003      | Creator Authenticated | Verify creator payouts empty-balance baseline            | Ensure a logged-in creator can access payouts and safe finance UI  | Creator storage state exists at `creatorStorageStatePath`                      | High     | auth, creator, payouts, regression, automation-candidate | Web UI    | 1      | Start test with creator storage state                                 | Browser context is authenticated as creator                                          |                                                                                              |
+|              |                       |                                                          |                                                                    |                                                                                |          |                                                          |           | 2      | Navigate to `/creator/payouts`                                        | User remains outside `/login` and stays on `/creator/payouts`                        |                                                                                              |
+|              |                       |                                                          |                                                                    |                                                                                |          |                                                          |           | 3      | Inspect payout summary and primary withdrawal action                  | Heading `ประวัติการถอนเงิน`, zero-balance state, and `ถอนเงิน` action are visible    | Prefer mocking payout-summary/history APIs in PROF rather than asserting live finance totals |
+| AUT-004      | Creator Authenticated | Verify creator profile baseline and unverified KYC state | Ensure a logged-in creator can access profile and current state    | Creator storage state exists at `creatorStorageStatePath`                      | High     | auth, creator, profile, regression, automation-candidate | Web UI    | 1      | Start test with creator storage state                                 | Browser context is authenticated as creator                                          |                                                                                              |
+|              |                       |                                                          |                                                                    |                                                                                |          |                                                          |           | 2      | Navigate to `/creator/profile`                                        | User remains outside `/login` and stays on `/creator/profile`                        |                                                                                              |
+|              |                       |                                                          |                                                                    |                                                                                |          |                                                          |           | 3      | Inspect profile identity, sections, and KYC status                    | Display name, profile sections, and current KYC state `ยังไม่ยืนยัน` are visible     | Mock profile-detail API only if seeded display data becomes unstable in PROF                 |
+| AUT-005      | Creator Authenticated | Verify creator logout returns user to public homepage    | Ensure creator can leave authenticated shell safely                | Creator storage state exists at `creatorStorageStatePath`; creator shell loads | Medium   | auth, creator, logout, navigation                        | Web UI    | 1      | Start test with creator storage state and open an authenticated route | Creator shell is visible with logout control                                         |                                                                                              |
+|              |                       |                                                          |                                                                    |                                                                                |          |                                                          |           | 2      | Trigger `ออกจากระบบ`                                                  | Creator session exits authenticated area                                             | Current exploration observed pointer-click interception risk during probing                  |
+|              |                       |                                                          |                                                                    |                                                                                |          |                                                          |           | 3      | Observe post-logout destination                                       | User is routed to homepage `/` and no longer remains in creator authenticated routes | Keep logout action live; do not mock auth/session exit                                       |
